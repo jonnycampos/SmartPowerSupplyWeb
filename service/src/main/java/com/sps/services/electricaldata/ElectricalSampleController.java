@@ -6,6 +6,10 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
 import javax.servlet.http.HttpServletResponse;
 
 @RestController
@@ -23,9 +27,11 @@ public class ElectricalSampleController {
 
     
     @RequestMapping(value="/electricaldata", method=RequestMethod.GET)
-    public ElectricalSampleList getAllElectricalSamples(HttpServletResponse response) {
+    public List<ElectricalSample> getAllElectricalSamples(HttpServletResponse response) {
         response.addHeader("Access-Control-Allow-Origin", "*");
-        return electricalSampleService.getAllElectricalSamples();
+        LocalDateTime b = LocalDateTime.parse("2020-08-12T10:18:01.897");
+        LocalDateTime a = LocalDateTime.parse("2020-08-12T10:18:01.497");
+        return electricalSampleService.getElectricalSamples(a, b);
     }
 
     
@@ -34,6 +40,8 @@ public class ElectricalSampleController {
         response.addHeader("Access-Control-Allow-Origin", "*");
         return electricalSampleService.saveRandomElectricalSample();
     }
+    
+    
     
 
     @RequestMapping(value="/", method=RequestMethod.GET)

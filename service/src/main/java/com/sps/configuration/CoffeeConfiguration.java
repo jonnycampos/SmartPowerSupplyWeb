@@ -20,5 +20,13 @@ public class CoffeeConfiguration {
 		this.coffeeConfigurationRanges = coffeeConfigurationRanges;
 	}
 	
+	public Integer getTotalSeconds() {
+		Integer totalSeconds = 0;
+		for (CoffeeConfigurationRange range: coffeeConfigurationRanges) {
+			totalSeconds += range.getTime();
+		}
+		return totalSeconds;
+	}
+	
 	
 }
