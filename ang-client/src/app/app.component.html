@@ -1,0 +1,29 @@
+
+
+
+<mat-sidenav-container [class.m2app-dark]="isDarkTheme">
+	
+	<mat-toolbar color="primary">
+	  <button mat-button [matMenuTriggerFor]="menu">
+	    <i class="material-icons">menu</i>
+	  </button>
+	  <mat-menu #menu="matMenu">
+		  <button mat-menu-item [routerLink]="'/simulation'">
+		    <mat-icon>settings</mat-icon>
+		    <span>Simulation</span>
+		  </button>
+		  <button mat-menu-item>
+		    <mat-icon>label</mat-icon>
+		    <span>Labeling</span>
+		  </button>
+	   </mat-menu>
+	   <span>Smart Plug Tools</span>
+	</mat-toolbar>
+
+
+	<router-outlet></router-outlet>
+
+
+</mat-sidenav-container>
+
+

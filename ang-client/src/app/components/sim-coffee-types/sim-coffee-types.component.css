@@ -1,0 +1,22 @@
+.card {
+/*   max-width: 800px; */
+  margin-bottom: 10px;
+}
+
+
+.header-image-coffe {
+  background-image: url('https://www.nestleprofessional.co.uk/sites/g/files/gfb191/f/styles/product/public/media/3.3a-nescafe-go-3in1-cup-front-pitch.png?itok=IBH7ZZ9F');
+  background-size: cover;
+}
+
+.header-image-idle {
+  background-image: url('https://www.staples.co.uk/content/images/product/GenesisExtraLarge/86/68/asset.5568668.jpg');
+  background-size: cover;
+}
+
+
+.header-image-sim {
+  background-image: url('https://icons-for-free.com/iconfiles/png/512/gear+machine+office+radio+settings+setting+settings+icon-1320183166217702456.png');
+  background-size: cover;
+}
+

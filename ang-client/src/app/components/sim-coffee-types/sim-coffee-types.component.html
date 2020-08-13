@@ -1,0 +1,70 @@
+
+    <!-- Simulation Coffee Types -->
+    <mat-card class="card">
+      <mat-card-header>
+    	<div mat-card-avatar class="header-image-coffe"></div>
+        <mat-card-title>Choose a coffee</mat-card-title>
+        <mat-card-subtitle>When you click on them they will show up as part of the simulation</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-chip-list>
+          <mat-chip *ngFor="let coffeType of coffeeTypes" selected="true" color="{{coffeType.color}}" (click)="chipSelect(coffeType)">
+            {{coffeType.name}}
+          </mat-chip>
+        </mat-chip-list>
+      </mat-card-content>
+    </mat-card>
+    <!-- /Simulation Coffee Types -->
+
+
+    
+    <!-- Idle Time -->
+     <mat-card class="card">
+      <mat-card-header>
+    	<div mat-card-avatar class="header-image-idle"></div>
+        <mat-card-title>Idle Time</mat-card-title>
+        <mat-card-subtitle>Click an option to add the time the machine is idle</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-chip-list>
+          <mat-chip *ngFor="let idleOption of idleOptions" selected="true" color="{{idleOption.color}}" (click)="chipSelect(idleOption)">
+            {{idleOption.name}}
+          </mat-chip>
+        </mat-chip-list>
+      </mat-card-content>
+    </mat-card>
+    <!-- /Idle Time -->
+    
+
+    
+    <!-- Selected Chips -->
+     <mat-card class="card">
+      <mat-card-header>
+    	<div mat-card-avatar class="header-image-sim"></div>
+        <mat-card-title>Simulation</mat-card-title>
+        <mat-card-subtitle>Choose between coffee types and add spare time. Then launch simulation and wait until is complete!</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-chip-list>
+          <mat-chip *ngFor="let simulationOption of simulationOptions" selected="true" color="{{simulationOption.color}}" [removable]="removable" (click)="chipRemove(simulationOption)">
+            {{simulationOption.name}}
+          </mat-chip>
+        </mat-chip-list>
+        <mat-spinner *ngIf="simulationInProgress"></mat-spinner>
+      </mat-card-content>
+      <mat-card-actions>
+    	<button mat-raised-button color="link" (click)="launchSimulation()">LAUNCH SIMULATION</button>
+  	  </mat-card-actions>
+    </mat-card>
+    <!-- Selected Chips -->
+    
+   
+
+    
+    <mat-card class="card">
+      <mat-card-content>
+        <app-line-chart></app-line-chart>
+      </mat-card-content>
+    </mat-card>
+ 
+    
