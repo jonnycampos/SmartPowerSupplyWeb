@@ -1,4 +1,4 @@
-package com.sps.services.simulator;
+package com.sps.services;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
@@ -17,9 +17,9 @@ import org.springframework.stereotype.Service;
 import com.sps.configuration.CoffeeConfiguration;
 import com.sps.configuration.CoffeeConfigurationRange;
 import com.sps.configuration.DeviceSimulatorConfiguration;
-import com.sps.services.electricaldata.ElectricalSample;
-import com.sps.services.electricaldata.ElectricalSampleRepository;
-import com.sps.services.electricaldata.ElectricalSampleService;
+import com.sps.repository.ElectricalSampleRepository;
+import com.sps.services.electricaldata.bo.ElectricalSample;
+import com.sps.services.simulator.bo.SimulatorConfig;
 
 @Configuration
 @EnableConfigurationProperties(DeviceSimulatorConfiguration.class)

@@ -1,0 +1,10 @@
+.card {
+ /* max-width: 1000px; */ 
+  margin-top: 10px;
+}
+
+
+.header-image-coffe {
+  background-image: url('https://www.nestleprofessional.co.uk/sites/g/files/gfb191/f/styles/product/public/media/3.3a-nescafe-go-3in1-cup-front-pitch.png?itok=IBH7ZZ9F');
+  background-size: cover;
+}

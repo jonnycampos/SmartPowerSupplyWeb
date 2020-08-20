@@ -1,13 +1,13 @@
-package com.sps.services.electricaldata;
+package com.sps.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import com.sps.services.electricaldata.bo.ElectricalSample;
 
 
 

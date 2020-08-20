@@ -1,0 +1,26 @@
+
+
+
+
+    <!-- Initial Time -->
+    <mat-card class="card">
+      <mat-card-header>
+    	<div mat-card-avatar class="header-image-time"></div>
+        <mat-card-title>{{title}}</mat-card-title>
+        <mat-card-subtitle>Choose exact date and time</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+       <div [formGroup]="formGroup">
+       	   <ngx-mat-datetime-picker  #picker [showSpinners]="true" [showSeconds]="true"
+	      [touchUi]="false"  [enableMeridian]="false" 
+	      [disableMinute]="false" [hideTime]="false" (dateChange)="dateChanged()">
+	   </ngx-mat-datetime-picker>
+	   <input formControlName="date" matInput [ngxMatDatetimePicker]="picker" placeholder="Choose a date">
+	   <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+
+	   </div>
+      </mat-card-content>
+    </mat-card>
+    <!-- /Initial Time -->
+  
+

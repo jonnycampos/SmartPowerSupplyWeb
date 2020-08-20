@@ -1,0 +1,32 @@
+
+<div fxLayout="row wrap" fxLayoutAlign="center center" fxLayoutGap="12px" >
+    <mat-card theme="forest" *ngFor="let interaction of interactionsToLabel;let i=index;" class="card">
+	  <mat-card-header>
+	    <div mat-card-avatar class="header-image-coffe"></div>
+	    <mat-card-title>Labeling {{i+1}}</mat-card-title>
+	    <mat-card-subtitle>Discovery at {{interaction.startFormatted}}</mat-card-subtitle>
+	  </mat-card-header>
+      <mat-card-content>
+
+         <div class="mat-h3">Start - {{interaction.startFormatted}}</div>
+         <div class="mat-h3">End - {{interaction.startFormatted}}</div>
+
+
+		 <mat-form-field appearance="fill">
+		  <mat-label>Choose Label</mat-label>
+		  <mat-select (selectionChange)="performLabel($event,interaction,i)">
+		    <mat-option *ngFor="let label of labelsList" [value]="label">{{label}}</mat-option>
+		  </mat-select>
+		 </mat-form-field>
+		 
+		 <mat-spinner *ngIf="labelInProgress[i]" diameter="20"></mat-spinner>
+		
+		 <p></p>
+         <div class="mat-h2" *ngIf="labelDone[i]">Labeled Successfully</div>
+         
+         
+      </mat-card-content>
+
+    </mat-card>
+    <!-- /Simulation Coffee Types -->
+</div>

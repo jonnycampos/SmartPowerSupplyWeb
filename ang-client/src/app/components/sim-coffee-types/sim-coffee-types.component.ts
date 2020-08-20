@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { SimulatorConfig } from '../../services/simulator-config';
-import { SimulatorService } from '../../services/simulator.service';
+import { SamplesService } from '../../services/samples.service';
 
 @Component({
   selector: 'app-sim-coffee-types',
@@ -9,7 +9,7 @@ import { SimulatorService } from '../../services/simulator.service';
 })
 export class SimCoffeeTypesComponent implements OnInit {
 
-  constructor(private simulatorService:SimulatorService) { }
+  constructor(private samplesService:SamplesService) { }
   
   public coffeeTypes = [
     { name: 'Capuccino', color: 'primary', coffeeCode:"capuccino", simType:"coffee" },
@@ -63,12 +63,12 @@ export class SimCoffeeTypesComponent implements OnInit {
       simulationConfigList.push(simulatorConfig);
     });
 	this.simulationInProgress = true;
-	this.simulatorService.launchSimulator(simulationConfigList)
+	this.samplesService.launchSimulator(simulationConfigList)
         .subscribe( data => {
 	      this.simulationOptions = [];
 		  //this.samples = this.dataForVisualization(data);
           //Send the data so other components can consume it
-	      this.simulatorService.simulationData(data);
+	      this.samplesService.samplesData(data);
 		  this.simulationInProgress = false;
         });
   }

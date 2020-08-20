@@ -1,4 +1,4 @@
-package com.sps.services;
+package com.sps.controller;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

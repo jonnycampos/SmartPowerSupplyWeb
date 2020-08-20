@@ -9,6 +9,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatDatepickerModule} from '@angular/material/datepicker';
+import { MatGridListModule} from '@angular/material/grid-list';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -17,6 +22,12 @@ import { HttpClientModule } from '@angular/common/http';
 import { ChartsModule } from 'ng2-charts';
 import { LineChartComponent } from './components/line-chart/line-chart.component';
 import { LabelingComponent } from './components/labeling/labeling.component';
+import { NgxMatDatetimePickerModule, NgxMatTimepickerModule, NgxMatNativeDateModule } from '@angular-material-components/datetime-picker';
+import { DatetimepickerComponent } from './components/datetimepicker/datetimepicker.component';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { LabelListComponent } from './components/label-list/label-list.component';
+
 
 
 @NgModule({
@@ -24,7 +35,9 @@ import { LabelingComponent } from './components/labeling/labeling.component';
     AppComponent,
     SimCoffeeTypesComponent,
     LineChartComponent,
-    LabelingComponent
+    LabelingComponent,
+    DatetimepickerComponent,
+    LabelListComponent
   ],
   imports: [
     BrowserModule,
@@ -37,12 +50,22 @@ import { LabelingComponent } from './components/labeling/labeling.component';
 	MatToolbarModule,
 	MatDividerModule,
 	MatProgressSpinnerModule,
+	MatFormFieldModule,
+	MatDatepickerModule,
+	MatGridListModule,   
+	MatSelectModule,
+	MatInputModule,
 	HttpClientModule,
 	ChartsModule,
 	MatMenuModule,
-	MatIconModule
+	MatIconModule,
+	NgxMatDatetimePickerModule, 
+	NgxMatTimepickerModule,
+	NgxMatNativeDateModule,
+	FlexLayoutModule,
+	FormsModule,ReactiveFormsModule
   ],
-  providers: [],
+  providers: [NgxMatNativeDateModule],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

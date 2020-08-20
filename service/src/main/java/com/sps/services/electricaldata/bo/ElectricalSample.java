@@ -1,4 +1,4 @@
-package com.sps.services.electricaldata;
+package com.sps.services.electricaldata.bo;
 
 import java.time.LocalDateTime;
 import java.util.Random;
@@ -6,7 +6,7 @@ import java.util.Random;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document
+@Document(collection = "electricalSample")
 public class ElectricalSample {
 
 	@Id
@@ -14,6 +14,7 @@ public class ElectricalSample {
 	private LocalDateTime time;
     private Integer ma;
     private Integer v;
+    private String label;
 
     
     
@@ -73,6 +74,16 @@ public class ElectricalSample {
 	public void setV(Integer v) {
 		this.v = v;
 	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
+	
+	
     
     
     

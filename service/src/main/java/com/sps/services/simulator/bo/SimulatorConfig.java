@@ -1,4 +1,4 @@
-package com.sps.services.simulator;
+package com.sps.services.simulator.bo;
 
 public class SimulatorConfig {
 
