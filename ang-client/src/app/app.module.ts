@@ -4,6 +4,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -14,6 +15,7 @@ import { MatDatepickerModule} from '@angular/material/datepicker';
 import { MatGridListModule} from '@angular/material/grid-list';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
+import { MatTableModule } from '@angular/material/table';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -27,8 +29,8 @@ import { DatetimepickerComponent } from './components/datetimepicker/datetimepic
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LabelListComponent } from './components/label-list/label-list.component';
-
-
+import { TrainingComponent } from './components/training/training.component';
+import { MatSortModule } from '@angular/material/sort';
 
 @NgModule({
   declarations: [
@@ -37,7 +39,8 @@ import { LabelListComponent } from './components/label-list/label-list.component
     LineChartComponent,
     LabelingComponent,
     DatetimepickerComponent,
-    LabelListComponent
+    LabelListComponent,
+    TrainingComponent
   ],
   imports: [
     BrowserModule,
@@ -47,6 +50,7 @@ import { LabelListComponent } from './components/label-list/label-list.component
 	MatChipsModule,
 	MatSidenavModule,
 	MatButtonModule,
+	MatCheckboxModule,
 	MatToolbarModule,
 	MatDividerModule,
 	MatProgressSpinnerModule,
@@ -55,6 +59,7 @@ import { LabelListComponent } from './components/label-list/label-list.component
 	MatGridListModule,   
 	MatSelectModule,
 	MatInputModule,
+	MatTableModule,
 	HttpClientModule,
 	ChartsModule,
 	MatMenuModule,
@@ -63,7 +68,8 @@ import { LabelListComponent } from './components/label-list/label-list.component
 	NgxMatTimepickerModule,
 	NgxMatNativeDateModule,
 	FlexLayoutModule,
-	FormsModule,ReactiveFormsModule
+	FormsModule,ReactiveFormsModule,
+	MatSortModule
   ],
   providers: [NgxMatNativeDateModule],
   bootstrap: [AppComponent]

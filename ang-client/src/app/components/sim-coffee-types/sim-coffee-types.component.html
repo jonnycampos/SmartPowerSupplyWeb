@@ -13,6 +13,9 @@
           </mat-chip>
         </mat-chip-list>
       </mat-card-content>
+      <mat-card-actions>
+    	<button mat-raised-button color="link" (click)="randomCoffeeSelection()">RANDOM COFFEE SELECTION</button>
+  	  </mat-card-actions>
     </mat-card>
     <!-- /Simulation Coffee Types -->
 
@@ -43,6 +46,7 @@
     	<div mat-card-avatar class="header-image-sim"></div>
         <mat-card-title>Simulation</mat-card-title>
         <mat-card-subtitle>Choose between coffee types and add spare time. Then launch simulation and wait until is complete!</mat-card-subtitle>
+        <mat-spinner *ngIf="simulationInProgress"  diameter="20"></mat-spinner>
       </mat-card-header>
       <mat-card-content>
         <mat-chip-list>
@@ -50,9 +54,10 @@
             {{simulationOption.name}}
           </mat-chip>
         </mat-chip-list>
-        <mat-spinner *ngIf="simulationInProgress"></mat-spinner>
+      
       </mat-card-content>
       <mat-card-actions>
+         <mat-checkbox (checked)="saveLabel" name="savelabel" (click)="changeValue()" color="primary">Save Label   </mat-checkbox>
     	<button mat-raised-button color="link" (click)="launchSimulation()">LAUNCH SIMULATION</button>
   	  </mat-card-actions>
     </mat-card>

@@ -54,4 +54,26 @@ export class SamplesService {
     return this.http.post(url, indata);
   }
 
+  public predictLabel(start, end) {
+	var url = this.serviceUrl + 'labeling/predict';
+	var indata = {'initialTime': start, 'endTime': end};
+    return this.http.post(url, indata);
+  }
+
+
+
+  public getInteractionsLabeled() {
+	var url = this.serviceUrl + 'labeling/interactionlabeled';
+    return this.http.post(url, {});
+  }
+
+
+  public exportLabels(idList) {
+	var url = this.serviceUrl + 'labeling/export';
+    return this.http.post(url, idList,{ 
+		responseType: 'blob',
+		headers: new HttpHeaders().append("Content-Type", "application/json") 
+	});
+  }
+
 }

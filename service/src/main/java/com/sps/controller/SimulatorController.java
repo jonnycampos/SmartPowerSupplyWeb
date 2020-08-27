@@ -47,12 +47,6 @@ public class SimulatorController {
         //Create simulation
     	Integer numberOfSamples = simulatorService.simulate(simulatorConfigList);
     	return electricalSampleService.getLastElectricalSamples(numberOfSamples);
-    	
-    	//And now retrieve a sample of what happened last x second
-    	//LocalDateTime timeB = LocalDateTime.now();
-    	//LocalDateTime timeA = timeB.minusSeconds(60);
-        //return electricalSampleService.getElectricalSamples(timeA, timeB);
-        
     }
        
 }

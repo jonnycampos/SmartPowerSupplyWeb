@@ -31,7 +31,7 @@ public class ElectricalInteraction {
 		this.end = end;
 		
 		this.startFormatted = start.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
-		this.endFormatted = start.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+		this.endFormatted = end.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
 	}
 
 	public LocalDateTime getStart() {

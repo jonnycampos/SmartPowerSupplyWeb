@@ -14,7 +14,7 @@
 
 		 <mat-form-field appearance="fill">
 		  <mat-label>Choose Label</mat-label>
-		  <mat-select (selectionChange)="performLabel($event,interaction,i)">
+		  <mat-select (selectionChange)="performLabel($event.value,interaction,i)">
 		    <mat-option *ngFor="let label of labelsList" [value]="label">{{label}}</mat-option>
 		  </mat-select>
 		 </mat-form-field>
@@ -26,6 +26,10 @@
          
          
       </mat-card-content>
+      <mat-card-actions>
+    	<button mat-raised-button color="link" (click)="predict(interaction,i)">PREDICT</button>
+  	    <button mat-raised-button color="primary" *ngIf="predictionDone[i]" (click)="performLabel(predictionText[i],interaction,i)">{{predictionText[i]}}</button>
+  	  </mat-card-actions>
 
     </mat-card>
     <!-- /Simulation Coffee Types -->

@@ -26,8 +26,23 @@ public class LabelingConfiguration {
 	Integer minRangeInteractionAmp;
 	Integer maxRangeInteractionAmp;
 	
+	//Electrical parameter to consider a sample as idle
+	Integer minRangeIdleVol;
+	Integer maxRangeIdleVol;
+	Integer minRangeIdleAmp;
+	Integer maxRangeIdleAmp;
+	
+	//Number of consecutive idle samples to consider the device is idle again
+	Integer consecutiveSamplesIdle;
+	
+	//URL of the classifier ML
+	String classifierURL;
+	
 	//Labels
 	ArrayList<String> labels;
+	
+	//File to save exports
+	String exportFile;
 	
 	public Integer getSamplesInteractionFound() {
 		return samplesInteractionFound;
@@ -70,6 +85,48 @@ public class LabelingConfiguration {
 	}
 	public void setLabels(ArrayList<String> labels) {
 		this.labels = labels;
+	}
+	public String getExportFile() {
+		return exportFile;
+	}
+	public void setExportFile(String exportFile) {
+		this.exportFile = exportFile;
+	}
+	public Integer getMinRangeIdleVol() {
+		return minRangeIdleVol;
+	}
+	public void setMinRangeIdleVol(Integer minRangeIdleVol) {
+		this.minRangeIdleVol = minRangeIdleVol;
+	}
+	public Integer getMaxRangeIdleVol() {
+		return maxRangeIdleVol;
+	}
+	public void setMaxRangeIdleVol(Integer maxRangeIdleVol) {
+		this.maxRangeIdleVol = maxRangeIdleVol;
+	}
+	public Integer getMinRangeIdleAmp() {
+		return minRangeIdleAmp;
+	}
+	public void setMinRangeIdleAmp(Integer minRangeIdleAmp) {
+		this.minRangeIdleAmp = minRangeIdleAmp;
+	}
+	public Integer getMaxRangeIdleAmp() {
+		return maxRangeIdleAmp;
+	}
+	public void setMaxRangeIdleAmp(Integer maxRangeIdleAmp) {
+		this.maxRangeIdleAmp = maxRangeIdleAmp;
+	}
+	public Integer getConsecutiveSamplesIdle() {
+		return consecutiveSamplesIdle;
+	}
+	public void setConsecutiveSamplesIdle(Integer consecutiveSamplesIdle) {
+		this.consecutiveSamplesIdle = consecutiveSamplesIdle;
+	}
+	public String getClassifierURL() {
+		return classifierURL;
+	}
+	public void setClassifierURL(String classifierURL) {
+		this.classifierURL = classifierURL;
 	}
 	
 	

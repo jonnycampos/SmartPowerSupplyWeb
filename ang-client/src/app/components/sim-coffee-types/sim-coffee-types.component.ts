@@ -12,9 +12,12 @@ export class SimCoffeeTypesComponent implements OnInit {
   constructor(private samplesService:SamplesService) { }
   
   public coffeeTypes = [
-    { name: 'Capuccino', color: 'primary', coffeeCode:"capuccino", simType:"coffee" },
-    { name: 'Machiato', color: 'primary', coffeeCode:"macchiato", simType:"coffee"},
-    { name: 'Espresso', color: 'primary', coffeeCode:"espresso", simType:"coffee" }
+    { name: 'Capuccino', color: 'primary', coffeeCode:"Capuccino", simType:"coffee" },
+    { name: 'Machiato', color: 'primary', coffeeCode:"Macchiato", simType:"coffee"},
+    { name: 'Espresso', color: 'primary', coffeeCode:"Espresso", simType:"coffee" },
+    { name: 'Capuccino Decaf', color: 'primary', coffeeCode:"CapuccinoDecaf", simType:"coffee" },
+    { name: 'Espresso Decaf', color: 'primary', coffeeCode:"EspressoDecaf", simType:"coffee" },
+
   ];
 
 
@@ -32,10 +35,12 @@ export class SimCoffeeTypesComponent implements OnInit {
 
   public simulationInProgress = false;
 
-  public chipSelect(chip: any) {
+  public saveLabel:boolean = false;
 
-	chip.index = this.index;
-	this.simulationOptions.push(chip);
+  public chipSelect(chip: any) {
+    var chipToInsert = chip;
+	chipToInsert.index = this.index;
+	this.simulationOptions.push(chipToInsert);
 	this.index = this.index + 1;
   }
 
@@ -47,6 +52,32 @@ export class SimCoffeeTypesComponent implements OnInit {
 	this.index = this.index + 1;
   }
 
+   public changeValue() {
+      this.saveLabel = !this.saveLabel;
+   }
+
+  
+  public randomCoffeeSelection() {
+	this.simulationOptions = [];
+	for (let i = 0; i < 100; i++) {
+		//Choose the 1 second chip
+		var chipTime:any = this.idleOptions[0];
+		chipTime.index = this.index;
+		this.simulationOptions.push(chipTime);
+		this.index = this.index + 1;
+		
+		//Choose randomly one of coffee types
+		var chipCoffee:any = this.coffeeTypes[this.randomIntFromInterval(0,this.coffeeTypes.length -1)];
+		chipCoffee.index = this.index;
+		this.simulationOptions.push(chipCoffee);
+		this.index = this.index + 1;
+
+	}
+  }
+
+	private randomIntFromInterval(min:number, max:number) { // min and max included 
+	  return Math.floor(Math.random() * (max - min + 1) + min);
+	}
 
   public launchSimulation() {
 	var simulationConfigList = [];
@@ -60,17 +91,21 @@ export class SimCoffeeTypesComponent implements OnInit {
 	  } else {
 		console.error("Chip type invalid " + chip.simType);
 	  }
+	  simulatorConfig.saveLabel = this.saveLabel;
       simulationConfigList.push(simulatorConfig);
     });
-	this.simulationInProgress = true;
-	this.samplesService.launchSimulator(simulationConfigList)
-        .subscribe( data => {
-	      this.simulationOptions = [];
-		  //this.samples = this.dataForVisualization(data);
-          //Send the data so other components can consume it
-	      this.samplesService.samplesData(data);
-		  this.simulationInProgress = false;
-        });
+	
+	if (simulationConfigList.length > 0) {
+		this.simulationInProgress = true;
+		this.samplesService.launchSimulator(simulationConfigList)
+	        .subscribe( data => {
+		      this.simulationOptions = [];
+			  //this.samples = this.dataForVisualization(data);
+	          //Send the data so other components can consume it
+		      this.samplesService.samplesData(data);
+			  this.simulationInProgress = false;
+	        });
+	}
   }
 
   dataForVisualization(sampleList) {

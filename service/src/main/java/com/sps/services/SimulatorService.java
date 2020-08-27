@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
+import org.graalvm.compiler.lir.LabelRef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ import com.sps.configuration.CoffeeConfiguration;
 import com.sps.configuration.CoffeeConfigurationRange;
 import com.sps.configuration.DeviceSimulatorConfiguration;
 import com.sps.repository.ElectricalSampleRepository;
+import com.sps.repository.LabelInteractionRepository;
+import com.sps.services.electricaldata.bo.ElectricalInteraction;
 import com.sps.services.electricaldata.bo.ElectricalSample;
 import com.sps.services.simulator.bo.SimulatorConfig;
 
@@ -33,6 +36,9 @@ public class SimulatorService {
 
     @Autowired
     private ElectricalSampleRepository repository;
+    
+    @Autowired
+    private LabelInteractionRepository labelRepository;
     
     /**
      * Generate a sample when the device is idle
@@ -73,23 +79,33 @@ public class SimulatorService {
 	 * Generate the electrical samples for a coffee type
 	 * @param coffeeType One of the coffee types configured in simulator.properties
 	 */
-	public void simulateCoffee(String coffeeType, @Nullable LocalDateTime time) {
-		logger.info("Simulating coffee interaction:" + coffeeType);
+	public void simulateCoffee(String coffeeType, @Nullable LocalDateTime time, Boolean saveLabel) {
+		logger.info("Simulating coffee interaction:" + coffeeType + " Saving Label " + saveLabel);
 		LocalDateTime sampleTime;
+		LocalDateTime endTime;
+		
 		if (time == null) { 
 			sampleTime = LocalDateTime.now();
 		} else {
 			sampleTime = time;
 		}
+		
 		CoffeeConfiguration coffeeConfiguration = simulatorConfig.getCoffeeTypes().get(coffeeType);
 		if (coffeeConfiguration == null) {
 			logger.error(coffeeType + " is not configured in the simulator");
 		    return;
 		}
 		
+		endTime = sampleTime;
 		for (CoffeeConfigurationRange range: coffeeConfiguration.getCoffeeConfigurationRanges()) {
-			simulateCoffeeRange(range, time);
-			sampleTime = sampleTime.plusSeconds(range.getTime());
+			simulateCoffeeRange(range, time, saveLabel, coffeeType);
+			endTime = endTime.plusSeconds(range.getTime());
+		}
+		
+		if (saveLabel) {
+			ElectricalInteraction interaction = new ElectricalInteraction(sampleTime, endTime);
+			interaction.setLabel(coffeeType);
+			labelRepository.save(interaction);
 		}
 	}
 	
@@ -107,7 +123,7 @@ public class SimulatorService {
 		for (SimulatorConfig config: simulatorConfigList) {
 			//Simulator Type
 			if (config.getType().equals("coffee")) {
-				simulateCoffee(config.getCoffeeType(),time);
+				simulateCoffee(config.getCoffeeType(),time,config.getSaveLabel());
 				time = time.plusSeconds(simulatorConfig.getCoffeeTypes().get(config.getCoffeeType()).getTotalSeconds());
 				totalSecondsSimulation += simulatorConfig.getCoffeeTypes().get(config.getCoffeeType()).getTotalSeconds();
 			} else if (config.getType().equals("idle")) {
@@ -123,19 +139,22 @@ public class SimulatorService {
 	
 	
 	
-	private void simulateCoffeeRange(CoffeeConfigurationRange range, LocalDateTime time) {
+	private void simulateCoffeeRange(CoffeeConfigurationRange range, LocalDateTime time, Boolean saveLabel, String coffeeType) {
 		Integer seconds = range.getTime();
 		Integer samplesPerSecond = simulatorConfig.getSamplesPerSecond();
 		IntStream.range(0, seconds*samplesPerSecond).forEach(
 				i -> 
-				simulateCoffeeSample(range, time.plus(i*(1000 / samplesPerSecond), ChronoField.MILLI_OF_DAY.getBaseUnit())));		
+				simulateCoffeeSample(range, time.plus(i*(1000 / samplesPerSecond), ChronoField.MILLI_OF_DAY.getBaseUnit()),saveLabel, coffeeType));		
 	}
 
 
-	private Object simulateCoffeeSample(CoffeeConfigurationRange range, LocalDateTime time) {
+	private Object simulateCoffeeSample(CoffeeConfigurationRange range, LocalDateTime time, Boolean saveLabel, String coffeeType) {
 		Integer amp = randomValue(range.getMinAmp(), range.getMaxAmp());
 		Integer vol = randomValue(range.getMinVol(), range.getMaxVol());
-		ElectricalSample electricalSample = new ElectricalSample(time, amp, vol);		
+		ElectricalSample electricalSample = new ElectricalSample(time, amp, vol);
+		if (saveLabel) {
+			electricalSample.setLabel(coffeeType);
+		}
 		repository.save(electricalSample);
 		return electricalSample;
 	}

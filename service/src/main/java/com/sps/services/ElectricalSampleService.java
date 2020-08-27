@@ -62,7 +62,7 @@ public class ElectricalSampleService {
 		List<ElectricalSample> samples = repositorySample.findByTime(timeA, timeB);
 		logger.info("Samples - " + samples.size());
 		//Samples analysis
-		List<ElectricalInteraction> likelyElectricalInteractions = analyzeElectricalPatterns(samples);
+		List<ElectricalInteraction> likelyElectricalInteractions = analyzeElectricalPatterns2(samples);
 		logger.info("After Analyzing there are likely- " + likelyElectricalInteractions.size() + " - Patterns to be labeled");
 		ElectricalSampleList result = new ElectricalSampleList();
 		result.setElectricalSamples(samples);
@@ -70,6 +70,45 @@ public class ElectricalSampleService {
 		return result;
 	}
 
+	
+	
+	
+	private List<ElectricalInteraction> analyzeElectricalPatterns2(List<ElectricalSample> samples) {
+		int i = 0;
+		Boolean currentStatusIdle = true;
+		List<ElectricalInteraction> interactions= new ArrayList<ElectricalInteraction>();
+		LocalDateTime start = null;
+		LocalDateTime end = null;
+		
+		while (i < samples.size()) {
+			ElectricalSample sample = samples.get(i);
+			if (currentStatusIdle) {
+				if (!isIdleStatus(sample)) {
+					//Look ahead in the next N following samples
+					//if (!isIdleSet(samples, i)) {
+						logger.info("Found Start of possible pattern:" + sample.getTime());
+						currentStatusIdle = false;
+						start = sample.getTime();						
+					//}
+				}
+			} else {
+				if (isIdleStatus(sample)) {
+					//if (isIdleSet(samples, i)) {
+						logger.info("Found End of possible pattern:" + sample.getTime());
+						currentStatusIdle = true;
+						end = sample.getTime();						
+						interactions.add(new ElectricalInteraction(start,end));
+					//}
+				}
+				
+			}
+			i = i + 1;
+		}
+		return interactions;
+
+	}
+	
+	
 	
 	/**
 	 * Analyze a consecutive list of electrical samples to find device interactions
@@ -164,9 +203,41 @@ public class ElectricalSampleService {
 		return (sample.getMa() >= labelingConfig.getMinRangeInteractionAmp() &&
 				sample.getMa() <= labelingConfig.getMaxRangeInteractionAmp() &&
 				sample.getV() >= labelingConfig.getMinRangeInteractionVol() &&
-				sample.getV() >= labelingConfig.getMinRangeInteractionVol());
+				sample.getV() <= labelingConfig.getMaxRangeInteractionVol());
 	}
 
+	
+	/**
+	 * True if the sample is in idle range
+	 * @param sample
+	 * @return
+	 */
+	private boolean isIdleStatus(ElectricalSample sample) {
+		return (sample.getMa() >= labelingConfig.getMinRangeIdleAmp() &&
+				sample.getMa() <= labelingConfig.getMaxRangeIdleAmp() &&
+				sample.getV() >= labelingConfig.getMinRangeIdleVol() &&
+				sample.getV() <= labelingConfig.getMaxRangeIdleVol());
+	}
+	
+	
+	private boolean isIdleSet(List<ElectricalSample> samples, int index) {
+
+		
+		try {
+			int i = index + 1;
+			while (i < i+labelingConfig.getConsecutiveSamplesIdle()) {
+				if (!isIdleStatus(samples.get(i))) {
+					return false;
+				}
+				i++;
+			}
+			return true;
+		} catch (IndexOutOfBoundsException e) {
+			//In case we can't check the complete set
+			return true;
+		}
+	}
+	
 	
 	/**
 	 * Returns the last N samples

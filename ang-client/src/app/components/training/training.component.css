@@ -1,0 +1,18 @@
+table {
+  width: 80%;
+}
+
+.basic-container {
+  padding: 30px;
+}
+
+.card_button {
+  max-width: 300px; 
+  margin-bottom: 10px;
+}
+
+
+.header-image-label {
+  background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Noun_Project_label_icon_1116097_cc.svg/237px-Noun_Project_label_icon_1116097_cc.svg.png');
+  background-size: cover;
+}

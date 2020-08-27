@@ -25,6 +25,7 @@
     "@angular/router": "~10.0.6",
     "chart.js": "^2.9.3",
     "chartjs-plugin-annotation": "^0.5.7",
+    "file-saver": "^2.0.2",
     "ng2-charts": "^2.3.3",
     "rxjs": "~6.5.5",
     "tslib": "^2.0.0",
