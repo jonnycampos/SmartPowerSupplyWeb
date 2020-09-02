@@ -9,10 +9,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import com.sps.configuration.DeviceSimulatorConfiguration;
 import com.sps.configuration.LabelingConfiguration;
 import com.sps.repository.ElectricalSampleRepository;
+import com.sps.services.electricaldata.bo.ElectricalDateConfig;
 import com.sps.services.electricaldata.bo.ElectricalInteraction;
 import com.sps.services.electricaldata.bo.ElectricalSample;
 import com.sps.services.electricaldata.bo.ElectricalSampleList;
@@ -258,6 +264,40 @@ public class ElectricalSampleService {
 	}
 
 	
+	
+	/**
+	 * Export electrical data within an start and end date
+	 * @param electricalDateConfig
+	 * @return The File containing time, electrical data, and label if exists 
+	 */
+	public File exportTimeSeries(ElectricalDateConfig electricalDateConfig) {
+			logger.info("Starting exporting time serie: " + electricalDateConfig);
+			
+			List<ElectricalSample> samples = repositorySample.findByTime(electricalDateConfig.getInitialTime(), electricalDateConfig.getEndTime());
+			
+			//Build the lines to write
+			ArrayList<String> lines = new ArrayList<String>(); 
+			for (ElectricalSample sample:samples) {
+				lines.add(createLine(sample));
+			}
+
+			//Write the file
+			File csvOutputFile = new File(labelingConfig.getExportFileTimeSeries());
+		    try (PrintWriter pw = new PrintWriter(csvOutputFile)) {
+		    	lines.stream().forEach(pw::println);
+			    logger.info("Ended writing the File");
+		    	return csvOutputFile;
+		    	
+		    } catch (FileNotFoundException e) {
+				logger.error("Error accesing the file " + labelingConfig.getExportFile(), e);
+			}
+		    return null;
+	}
+
+	private String createLine(ElectricalSample sample) {
+		String SEPARATOR = ";";
+		return String.join(SEPARATOR,sample.getTime().toString(),String.valueOf(sample.getMa()),String.valueOf(sample.getV()), sample.getLabel());
+	}	
 	
 
 }

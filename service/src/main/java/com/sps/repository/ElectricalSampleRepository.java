@@ -14,7 +14,7 @@ import com.sps.services.electricaldata.bo.ElectricalSample;
 @Repository
 public interface ElectricalSampleRepository extends MongoRepository<ElectricalSample, String> {
 
-    @Query("{'time' : {$gt : ?0, $lt : ?1}}")
+    @Query("{'time' : {$gte : ?0, $lte : ?1}}")
     public List<ElectricalSample> findByTime(LocalDateTime start, LocalDateTime end);
 
 

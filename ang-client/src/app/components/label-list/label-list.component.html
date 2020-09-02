@@ -8,9 +8,19 @@
 	  </mat-card-header>
       <mat-card-content>
 
-         <div class="mat-h3">Start - {{interaction.startFormatted}}</div>
-         <div class="mat-h3">End - {{interaction.startFormatted}}</div>
+         <div class="mat-h3">
+             Start - {{interaction.start}}
+             <mat-icon class="material-icons" style="cursor: pointer;" (click)="shift(interaction,'start','left')">arrow_left</mat-icon>
+			 <mat-icon class="material-icons" style="cursor: pointer;" (click)="shift(interaction,'start','right')">arrow_right</mat-icon>		     
+         </div>
+         <div class="mat-h3">
+           End - {{interaction.end}}
+             <mat-icon class="material-icons" style="cursor: pointer;" (click)="shift(interaction,'end','left')">arrow_left</mat-icon>
+             <mat-icon class="material-icons" style="cursor: pointer;" (click)="shift(interaction,'end','right')">arrow_right</mat-icon>         
+		  </div>
 
+
+	
 
 		 <mat-form-field appearance="fill">
 		  <mat-label>Choose Label</mat-label>

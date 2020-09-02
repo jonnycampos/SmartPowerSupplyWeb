@@ -43,6 +43,7 @@ public class LabelingConfiguration {
 	
 	//File to save exports
 	String exportFile;
+	String exportFileTimeSeries;
 	
 	public Integer getSamplesInteractionFound() {
 		return samplesInteractionFound;
@@ -127,6 +128,12 @@ public class LabelingConfiguration {
 	}
 	public void setClassifierURL(String classifierURL) {
 		this.classifierURL = classifierURL;
+	}
+	public String getExportFileTimeSeries() {
+		return exportFileTimeSeries;
+	}
+	public void setExportFileTimeSeries(String exportFileTimeSeries) {
+		this.exportFileTimeSeries = exportFileTimeSeries;
 	}
 	
 	

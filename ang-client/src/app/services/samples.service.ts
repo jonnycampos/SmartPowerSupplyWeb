@@ -17,7 +17,6 @@ export class SamplesService {
 
   private subject = new Subject<any>();
 
-
   public samplesData(data: any) {
       this.subject.next({ sampleData: data });
   }
@@ -26,8 +25,15 @@ export class SamplesService {
      return this.subject.asObservable();
   }
 
+  private subjectMoveTime = new Subject<any>(); 
 
+  public moveData(data: any) {
+      this.subjectMoveTime.next(data);
+  }
 
+  public getMovementData(): Observable<any> {
+     return this.subjectMoveTime.asObservable();
+  }
 
   private serviceUrl = 'http://localhost:8080/';
 
@@ -74,6 +80,21 @@ export class SamplesService {
 		responseType: 'blob',
 		headers: new HttpHeaders().append("Content-Type", "application/json") 
 	});
+  }
+
+
+  public exportTimeSeries(dateElectricalConfig) {
+	var url = this.serviceUrl + 'electricaldata/export';
+    return this.http.post(url, dateElectricalConfig,{ 
+		responseType: 'blob',
+		headers: new HttpHeaders().append("Content-Type", "application/json") 
+	});
+  }
+
+  public moveInteraction(interaction, timePoint,direction) {
+	return {'interaction':interaction,
+	        'timePoint':timePoint,
+            'direction':direction};
   }
 
 }

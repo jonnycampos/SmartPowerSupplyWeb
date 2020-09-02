@@ -98,7 +98,7 @@ public class SimulatorService {
 		
 		endTime = sampleTime;
 		for (CoffeeConfigurationRange range: coffeeConfiguration.getCoffeeConfigurationRanges()) {
-			simulateCoffeeRange(range, time, saveLabel, coffeeType);
+			simulateCoffeeRange(range, endTime, saveLabel, coffeeType);
 			endTime = endTime.plusSeconds(range.getTime());
 		}
 		

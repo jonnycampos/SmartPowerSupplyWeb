@@ -1,8 +1,11 @@
 package com.sps.controller;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.sps.services.ElectricalSampleService;
@@ -18,6 +21,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.net.URLConnection;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,6 +36,9 @@ public class ElectricalSampleController {
 
     @Autowired
     private ElectricalSampleService electricalSampleService = new ElectricalSampleService();
+
+    
+	Logger logger = LoggerFactory.getLogger(ElectricalSampleService.class);
 
     
 //    @RequestMapping(value="/electricaldata/all", method=RequestMethod.GET)
@@ -53,7 +64,31 @@ public class ElectricalSampleController {
     }
     
     
+    @CrossOrigin
+    @PostMapping(value="/electricaldata/export")
+    public void exportTimeSeries(@RequestBody ElectricalDateConfig electricalDateConfig, HttpServletResponse response) {
+    	File file = electricalSampleService.exportTimeSeries(electricalDateConfig);
+    	if (file.exists()) {
+			//get the mimetype
+			String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+			if (mimeType == null) {
+				//unknown mimetype so set the mimetype to application/octet-stream
+				mimeType = "application/octet-stream";
+			}
+			response.setContentType(mimeType);
+			response.setHeader("Content-Disposition", String.format("inline; filename=\"" + file.getName() + "\""));
+			InputStream inputStream;
+			try {
+				inputStream = new BufferedInputStream(new FileInputStream(file));
+				FileCopyUtils.copy(inputStream, response.getOutputStream());
+			} catch (Exception e) {
+				logger.error("Error returning file", e);
+			}
 
+    	}
+ 
+    	
+    }
     
 
     @RequestMapping(value="/", method=RequestMethod.GET)

@@ -9,6 +9,7 @@ import java.net.http.HttpClient.Version;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,6 +30,7 @@ import com.sps.repository.LabelInteractionRepository;
 import com.sps.services.electricaldata.bo.ElectricalDateConfig;
 import com.sps.services.electricaldata.bo.ElectricalInteraction;
 import com.sps.services.electricaldata.bo.ElectricalSample;
+import com.sps.util.SPSUtils;
 
 @Configuration
 @EnableConfigurationProperties({LabelingConfiguration.class,DeviceSimulatorConfiguration.class})
@@ -74,10 +76,28 @@ public class LabelingService {
 			sample.setLabel(labelInfo.getLabel());
 			repositorySample.save(sample);
 		}
+		
+		//We do some calculations as well
+		List<Integer> vList = samples.stream().map(ElectricalSample::getV).collect(Collectors.toList());
+		List<Integer> aList = samples.stream().map(ElectricalSample::getMa).collect(Collectors.toList());
 
+		
+		
 		//In another collection we will insert the label 
 		ElectricalInteraction labeledSample = new ElectricalInteraction(labelInfo.getStart(), labelInfo.getEnd());
 		labeledSample.setLabel(labelInfo.getLabel());
+		
+	    labeledSample.setMeanV(SPSUtils.mean(vList));
+	    labeledSample.setMeanA(SPSUtils.mean(aList));
+	    labeledSample.setMedianV(SPSUtils.median(vList));
+	    labeledSample.setMedianA(SPSUtils.median(aList));
+	    labeledSample.setModeV(SPSUtils.mode(vList));
+	    labeledSample.setModeA(SPSUtils.mode(aList));
+	    labeledSample.setMaxV(Collections.max(vList));
+	    labeledSample.setMaxA(Collections.max(aList));
+	    labeledSample.setMinV(Collections.min(vList));
+	    labeledSample.setMinA(Collections.min(aList));
+		
 		repositoryLabel.save(labeledSample);
 		logger.info("Labeled Done!!" );
 	}

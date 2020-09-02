@@ -12,6 +12,7 @@ export class LabelListComponent implements OnInit {
   subscription: Subscription;
   interactionsToLabel:any[];
   labelsList;
+  samplesList;
   labelInProgress:Boolean[];
   labelDone:Boolean[];
   predictionDone:Boolean[];
@@ -33,6 +34,7 @@ export class LabelListComponent implements OnInit {
 			this.predictionText.push("");
 		}		
 		this.interactionsToLabel = sampleList.sampleData.electricalInteractions;
+	    this.samplesList = sampleList.sampleData.electricalSamples;
 	});  
 	
   }
@@ -63,6 +65,52 @@ export class LabelListComponent implements OnInit {
 			this.predictionText[i] = data['result'][0];		
         });
   }
+
+
+   public shift(interaction, timePoint:String, direction:String) {
+      var movementParams = {interaction:interaction, timePoint:timePoint, direction:direction};
+      
+      //We add the change in the service so the annotation moves visually
+      this.samplesService.moveData(movementParams);
+      
+      //But we need to update this component as well ... Change interaction time 
+	  //Look for the interaction
+	  var i = 0;
+      var date;
+	  if (timePoint == 'start') {
+        while (this.interactionsToLabel[i].start !=  interaction.start) {
+		    i++;
+	    }
+        date = interaction.start;
+	  } else if (timePoint == 'end') {
+        while (this.interactionsToLabel[i].end !=  interaction.end) {
+		    i++;            
+	    }
+        date = interaction.end;
+      }
+
+      //Look for the sample
+      var s = 0;
+      while (this.samplesList[s].time != date) {
+		s++;
+	  }
+
+      if (timePoint == 'start') {
+	     if (direction == 'left' && s>0) {
+		    this.interactionsToLabel[i].start = this.samplesList[s-1].time;
+	     } else if (direction == 'right' && s<this.samplesList.length-1) {
+		    this.interactionsToLabel[i].start = this.samplesList[s+1].time;
+	     }
+	  } else if (timePoint == 'end' && s>0) {
+	     if (direction == 'left') {
+		    this.interactionsToLabel[i].end = this.samplesList[s-1].time;		    
+	     } else if (direction == 'right' && s<this.samplesList.length-1) {
+		    this.interactionsToLabel[i].end = this.samplesList[s+1].time;
+	     }		
+	  }      
+
+      //Move annotation
+   }
 
   ngOnInit(): void {
 	this.samplesService.getLabels().subscribe( data => {

@@ -17,6 +17,9 @@ export class LineChartComponent implements OnInit {
 
   
   subscription: Subscription;
+
+  subscriptionMove: Subscription;
+
   public lineChartData: ChartDataSets[] = [
        { data: [], label: 'Amperage', lineTension: 0 },
        { data: [], label: 'Voltage', lineTension: 0 }
@@ -71,6 +74,12 @@ export class LineChartComponent implements OnInit {
 		this.chart.chart.update();
 	});  
 
+	this.subscriptionMove = this.samplesService.getMovementData().subscribe(movementParams => {	
+		this.move(movementParams.interaction, movementParams.timePoint, movementParams.direction);
+	});  
+
+
+
   }
 
 
@@ -101,6 +110,40 @@ export class LineChartComponent implements OnInit {
 	}
 	return labels;
   }
+
+
+  move(interaction, timePoint, direction) {
+	//Look for the interaction
+	var formattedDate:String;
+    if (timePoint == 'start') {	
+	  formattedDate = formatDate(interaction.start,'dd/MM/yyyy HH:mm:ss.SSS','en-US');
+	} else if (timePoint == 'end') {  
+      formattedDate = formatDate(interaction.end,'dd/MM/yyyy HH:mm:ss.SSS','en-US');
+	}
+	var i = 0;
+	while (this.lineChartLabels[i] !=  formattedDate) {
+		i++;
+	}
+	
+	//Look for the annotation
+	var a = 0;
+	console.log(this.lineChartOptions.annotation.annotations);
+	while (this.lineChartOptions.annotation.annotations[a].value != formattedDate) {
+		a++;
+	}
+	
+	//And now we need to move the annotation
+	if (direction == 'left' && i>0) {
+		this.lineChartOptions.annotation.annotations[a].value = this.lineChartLabels[i-1];
+    } else if (direction == 'right' && i<this.lineChartLabels.length-1) {
+		this.lineChartOptions.annotation.annotations[a].value = this.lineChartLabels[i+1];	
+	}
+
+    //And redraw
+	this.chart.chart.options = this.lineChartOptions;
+	this.chart.chart.update();
+   }
+
 
   addAnnotations(interactionList) {
      var annotations = [];

@@ -42,5 +42,22 @@
 <!-- List of labeling options -->
 <app-label-list></app-label-list>
 
+<mat-divider></mat-divider>
+
+<!-- Export Series -->
+<div align="center">
+ <mat-card class="card_button" >
+  <mat-card-header>
+    <mat-card-title>Export Time Series</mat-card-title>
+    <mat-card-subtitle>Make sure everything is labeled succesfully</mat-card-subtitle>
+    <mat-spinner *ngIf="exportInProgress" diameter="20"></mat-spinner>
+  </mat-card-header>
+  <mat-card-actions>
+	<button mat-raised-button color="link" (click)="exportTimeSeries()">EXPORT</button>
+ </mat-card-actions>
+</mat-card>
+</div>
+<!-- Export Series --> 
+
 
 <mat-divider></mat-divider>
