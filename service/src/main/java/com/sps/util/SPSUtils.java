@@ -1,13 +1,17 @@
 package com.sps.util;
 
-import java.util.ArrayList;
 import java.util.List;
+
+
+
 
 public class SPSUtils {
 
 	
+	
+	
 	public static double mean(List<Integer> m) {
-	    double sum = 0;
+		double sum = 0;
 	    for (int i = 0; i < m.size(); i++) {
 	        sum += m.get(i);
 	    }

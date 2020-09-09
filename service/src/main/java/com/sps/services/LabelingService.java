@@ -112,11 +112,18 @@ public class LabelingService {
 	}
 	
 	
+	
+	/**
+	 * Export to csv data related to labels given during the input
+	 * @param idList
+	 * @return File with label data 
+	 */
 	public File exportLabeledInteractions(List<String> idList) {
 		logger.info("Starting exporting labeled inderactions: " + idList);
 		
 		//Build the lines to write
-		ArrayList<String> lines = new ArrayList<String>(); 
+		ArrayList<String> lines = new ArrayList<String>();
+		lines.add(createHeader());
 		for (String id:idList) {
 			Optional<ElectricalInteraction> electricalInteracion = repositoryLabel.findById(id);
 			if (electricalInteracion.isPresent()) {
@@ -128,7 +135,8 @@ public class LabelingService {
 
 		//Write the file
 		File csvOutputFile = new File(labelingConfig.getExportFile());
-	    try (PrintWriter pw = new PrintWriter(csvOutputFile)) {
+	    
+		try (PrintWriter pw = new PrintWriter(csvOutputFile)) {
 	    	lines.stream().forEach(pw::println);
 		    logger.info("Ended writing the File");
 	    	return csvOutputFile;
@@ -143,6 +151,25 @@ public class LabelingService {
 	}
 
 	
+	private String createHeader() {
+		String SEPARATOR = ";";
+		return String.join(SEPARATOR,
+				"AmpPoints",
+				"VolPoints",
+				"NumberOfSamples",
+				"MinA",
+				"MinV",
+			    "MaxA",
+			    "MaxV",
+			    "MeanA",
+			    "MeanV",			    
+			    "ModeA",
+			    "ModeV",
+			    "MedianA",
+			    "MedianV",
+				"Label");
+	}
+
 	/**
 	 * Build the structure of one line to write in file
 	 * @param labeledInteraction One labeled interaction
@@ -157,9 +184,24 @@ public class LabelingService {
 		String listAmp = "";
 		String listVol = "";
 		List<ElectricalSample> samples = repositorySample.findByTime(labeledInteraction.getStart(), labeledInteraction.getEnd());
+		
 		listAmp = samples.stream().map(ElectricalSample::getMa).map(Object::toString).collect(Collectors.joining (","));
 		listVol = samples.stream().map(ElectricalSample::getV).map(Object::toString).collect(Collectors.joining (","));
-		return String.join(SEPARATOR,listAmp,listVol,String.valueOf(samples.size()),labeledInteraction.getLabel());
+		return String.join(SEPARATOR,
+				listAmp,
+				listVol,
+				String.valueOf(samples.size()),
+				String.valueOf(labeledInteraction.getMinA()),
+				String.valueOf(labeledInteraction.getMinV()),
+			    String.valueOf(labeledInteraction.getMaxA()),
+			    String.valueOf(labeledInteraction.getMaxV()),
+			    String.valueOf(labeledInteraction.getMeanA()),
+			    String.valueOf(labeledInteraction.getMeanV()),			    
+			    String.valueOf(labeledInteraction.getModeA()),
+			    String.valueOf(labeledInteraction.getModeV()),
+			    String.valueOf(labeledInteraction.getMedianA()),
+			    String.valueOf(labeledInteraction.getMedianV()),
+				labeledInteraction.getLabel());
 	}
 
 	

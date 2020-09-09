@@ -277,6 +277,7 @@ public class ElectricalSampleService {
 			
 			//Build the lines to write
 			ArrayList<String> lines = new ArrayList<String>(); 
+			lines.add(createHeader());
 			for (ElectricalSample sample:samples) {
 				lines.add(createLine(sample));
 			}
@@ -292,6 +293,11 @@ public class ElectricalSampleService {
 				logger.error("Error accesing the file " + labelingConfig.getExportFile(), e);
 			}
 		    return null;
+	}
+
+	private String createHeader() {
+		String SEPARATOR = ";";
+		return String.join(SEPARATOR,"timestamp","ma","v","label");
 	}
 
 	private String createLine(ElectricalSample sample) {
