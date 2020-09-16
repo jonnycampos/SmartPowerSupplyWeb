@@ -1,59 +1,128 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.sps</groupId>
-	<artifactId>spsweb</artifactId>
-	<version>1.0-SNAPSHOT</version>
-
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.0.4.RELEASE</version>
-	</parent>
-
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-mongodb</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.mongodb</groupId>
-			<artifactId>mongo-java-driver</artifactId>
-			<version>3.12.6</version>
-		</dependency>
-		<dependency>
-    		<groupId>org.json</groupId>
-    		<artifactId>json</artifactId>
-    		<version>20190722</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-		</dependency>
-	</dependencies>
-
-	<properties>
-		<java.version>1.8</java.version>
-	</properties>
-
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">  
+  <modelVersion>4.0.0</modelVersion>  
+  <groupId>com.sps</groupId>  
+  <artifactId>spsweb</artifactId>  
+  <version>1.0-SNAPSHOT</version>  
+  <parent> 
+    <groupId>org.springframework.boot</groupId>  
+    <artifactId>spring-boot-starter-parent</artifactId>  
+    <version>2.0.4.RELEASE</version> 
+  </parent>  
+  <dependencies> 
+    <dependency> 
+      <groupId>org.springframework.boot</groupId>  
+      <artifactId>spring-boot-starter-data-mongodb</artifactId> 
+    </dependency>  
+    <dependency> 
+      <groupId>org.springframework.boot</groupId>  
+      <artifactId>spring-boot-starter-web</artifactId> 
+    </dependency>
+    <dependency>
+       <groupId>org.hibernate</groupId>
+       <artifactId>hibernate-validator</artifactId>
+       <version>6.1.5.Final</version>
+    </dependency>  
+    <dependency> 
+      <groupId>com.fasterxml.jackson.core</groupId>  
+      <artifactId>jackson-databind</artifactId> 
+    </dependency>  
+    <dependency> 
+      <groupId>org.mongodb</groupId>  
+      <artifactId>mongo-java-driver</artifactId>  
+      <version>3.12.6</version> 
+    </dependency>  
+    <dependency> 
+      <groupId>org.json</groupId>  
+      <artifactId>json</artifactId>  
+      <version>20190722</version> 
+    </dependency>  
+    <dependency> 
+      <groupId>org.springframework.boot</groupId>  
+      <artifactId>spring-boot-devtools</artifactId> 
+    </dependency> 
+  </dependencies>  
+  <properties> 
+    <java.version>1.8</java.version> 
+    <jib-maven-plugin.version>2.5.2</jib-maven-plugin.version>
+    <docker.image.prefix>spsweb.azurecr.io</docker.image.prefix>
+  </properties>  
+  <build> 
+    <plugins> 
+      <!-- Plugin to compile and execute -->
+      <plugin> 
+        <groupId>org.springframework.boot</groupId>  
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>  
+      <!-- Plugin to compile and push to azure -->
+      <plugin> 
+        <groupId>com.microsoft.azure</groupId>  
+        <artifactId>azure-webapp-maven-plugin</artifactId>  
+        <version>1.9.1</version>  
+        <configuration>
+          <schemaVersion>V2</schemaVersion>
+          <resourceGroup>sps</resourceGroup>
+          <appName>spsservice</appName>
+          <pricingTier>P2v2</pricingTier>
+          <region>westus2</region>
+          <runtime>
+            <os>linux</os>
+            <javaVersion>java11</javaVersion>
+            <webContainer>java11</webContainer>
+          </runtime>
+          <deployment>
+            <resources>
+              <resource>
+                <directory>${project.basedir}/target</directory>
+                <includes>
+                  <include>*.jar</include>
+                </includes>
+              </resource>
+            </resources>
+          </deployment>
+        </configuration>
+      </plugin>
+       <!-- Plugin to create docket and push to azure -->
+	  <plugin>
+		  <artifactId>jib-maven-plugin</artifactId>
+		  <groupId>com.google.cloud.tools</groupId>
+		  <version>${jib-maven-plugin.version}</version>
+		  <configuration>
+		     <from>
+		         <image>mcr.microsoft.com/java/jre:8-zulu-alpine</image>
+		     </from>
+		     <to>
+		         <image>${docker.image.prefix}/${project.artifactId}</image>
+		         <auth>
+		         	<username>spsweb</username>
+		         	<password>GKj87=Pm424Z8Djpo=eY3GqSco//g4DO</password>
+		         </auth>
+		     </to>
+		  </configuration>
+	  </plugin>      
+      <!-- Plugin to copy angular static resources to jar. This must be done by CICD pipeline -->
+      <plugin>
+		<artifactId>maven-resources-plugin</artifactId>
+		<executions>
+			<execution>
+				<id>copy-resources</id>
+				<phase>validate</phase>
+				<goals><goal>copy-resources</goal></goals>
+				<configuration>
+					<outputDirectory>${project.build.directory}/classes/static/</outputDirectory >
+					<resources>
+						<resource>
+							<directory>../ang-client/dist/ang-client</directory>
+						</resource>
+					</resources>
+				</configuration>
+			</execution>
+		</executions>
+	  </plugin>
+      
+      
+       
+    </plugins> 
+  </build> 
 </project>

@@ -8,10 +8,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 
 
 @Configuration
-@PropertySource("classpath:labeling.properties")
+@PropertySources({
+	@PropertySource("classpath:labeling.properties"),
+    @PropertySource(value = "classpath:/labeling-${spring.profiles.active}.properties", ignoreResourceNotFound = true)
+})
 @ConfigurationProperties("labeling")
 @Primary
 public class LabelingConfiguration {

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
+import { environment } from './../../environments/environment';
 
 
 const httpOptions = {
@@ -35,7 +36,7 @@ export class SamplesService {
      return this.subjectMoveTime.asObservable();
   }
 
-  private serviceUrl = 'http://localhost:8080/';
+  private serviceUrl = environment.serviceUrl;
 
   public launchSimulator(configList) {
 	var url = this.serviceUrl + 'simulate/chain';
