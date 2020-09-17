@@ -33,7 +33,6 @@ stages:
     - task: NodeTool@0
       inputs:
         versionSpec: '12.x'
-        workingDir: '$(System.DefaultWorkingDirectory)/ang-client'
       displayName: 'Install Node.js'
 
     - script: |
