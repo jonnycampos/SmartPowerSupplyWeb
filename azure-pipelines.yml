@@ -15,7 +15,7 @@ variables:
   webAppName: 'spsservice'
 
   # Environment name
-  environmentName: 'spsservice'
+  environmentName: 'prod'
   
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
@@ -33,7 +33,7 @@ stages:
     - task: Maven@3
       displayName: 'Maven Package'
       inputs:
-        mavenPomFile: 'pom.xml'
+        mavenPomFile: 'service/pom.xml'
 
     - task: CopyFiles@2
       displayName: 'Copy Files to artifact staging directory'
