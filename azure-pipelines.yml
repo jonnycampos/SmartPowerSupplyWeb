@@ -39,6 +39,7 @@ stages:
         npm install -g @angular/cli
         npm install
         ng build --prod
+      workingDirectory: 'ang-client'
       displayName: 'npm install and build'
 
     - task: Maven@3
