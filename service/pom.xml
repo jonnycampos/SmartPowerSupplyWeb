@@ -83,24 +83,6 @@
           </deployment>
         </configuration>
       </plugin>
-       <!-- Plugin to create docket and push to azure -->
-	  <plugin>
-		  <artifactId>jib-maven-plugin</artifactId>
-		  <groupId>com.google.cloud.tools</groupId>
-		  <version>${jib-maven-plugin.version}</version>
-		  <configuration>
-		     <from>
-		         <image>mcr.microsoft.com/java/jre:8-zulu-alpine</image>
-		     </from>
-		     <to>
-		         <image>${docker.image.prefix}/${project.artifactId}</image>
-		         <auth>
-		         	<username>spsweb</username>
-		         	<password>GKj87=Pm424Z8Djpo=eY3GqSco//g4DO</password>
-		         </auth>
-		     </to>
-		  </configuration>
-	  </plugin>      
       <!-- Plugin to copy angular static resources to jar. This must be done by CICD pipeline -->
       <plugin>
 		<artifactId>maven-resources-plugin</artifactId>
