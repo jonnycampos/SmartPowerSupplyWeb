@@ -36,7 +36,7 @@ stages:
         workingDir: 'ang-client'
       displayName: 'Install Node.js'
 
-    - script: |
+    - script:
       npm install -g @angular/cli
       npm install
       ng build --prod
