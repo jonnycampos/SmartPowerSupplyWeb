@@ -1,0 +1,11 @@
+.card_button {
+  max-width: 300px; 
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+
+.header-image-time {
+  background-image: url('https://www.staples.co.uk/content/images/product/GenesisExtraLarge/86/68/asset.5568668.jpg');
+  background-size: cover;
+}

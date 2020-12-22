@@ -1,0 +1,30 @@
+<div fxLayout="row wrap" fxLayoutAlign="center center" fxLayoutGap="12px" >
+    <!-- Initial Time -->
+    <form [formGroup]="formGroupInitialDateTime">
+    <app-datetimepicker [title]="titlePickerInitial" [formGroup]="formGroupInitialDateTime"></app-datetimepicker>
+    </form>
+    <!-- /Initial Time -->  
+
+    <!-- End Time -->
+    <form [formGroup]="formGroupEndDateTime">
+    <app-datetimepicker [title]="titlePickerEnd" [formGroup]="formGroupEndDateTime"></app-datetimepicker>
+    </form>
+    <!-- /End Time -->
+    
+    
+    <!-- Launch button -->
+     <mat-card class="card_button" >
+      <mat-card-header>
+        <mat-card-title>Start Receiving Data from Tuya</mat-card-title>
+        <mat-card-subtitle>After selecting start and end time</mat-card-subtitle>
+        <mat-spinner *ngIf="searchInProgress" diameter="20"></mat-spinner>
+      </mat-card-header>
+      <mat-card-actions>
+    	<button mat-raised-button color="link" (click)="getDataFromDevice()">Retrieve Data</button>
+  	  </mat-card-actions>
+    </mat-card>
+    <!-- Launch button -->   
+</div>
+
+   
+
