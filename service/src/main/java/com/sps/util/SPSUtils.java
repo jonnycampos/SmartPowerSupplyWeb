@@ -1,5 +1,8 @@
 package com.sps.util;
 
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 
@@ -45,5 +48,11 @@ public class SPSUtils {
 	    }
 
 	    return maxValue;
+	}
+	
+	public static long fromDateToTimestamp(LocalDateTime localDateTime) {
+		Instant instant = localDateTime.atZone(ZoneId.systemDefault()).toInstant();	
+		long timeInMillis = instant.toEpochMilli(); 
+		return timeInMillis;
 	}
 }

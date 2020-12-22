@@ -48,6 +48,11 @@ export class SamplesService {
     return this.http.post(url, dateElectricalConfig);
   }
 
+  public getDataFromDevice(dateElectricalConfig) {
+	var url = this.serviceUrl + 'tuya/get';
+    return this.http.post(url, dateElectricalConfig);
+  }
+
 
   public getLabels() {
 	var url = this.serviceUrl + 'labeling/labels';

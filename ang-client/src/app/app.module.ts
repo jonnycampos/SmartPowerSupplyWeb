@@ -31,6 +31,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LabelListComponent } from './components/label-list/label-list.component';
 import { TrainingComponent } from './components/training/training.component';
 import { MatSortModule } from '@angular/material/sort';
+import { TuyaComponent } from './components/tuya/tuya.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,8 @@ import { MatSortModule } from '@angular/material/sort';
     LabelingComponent,
     DatetimepickerComponent,
     LabelListComponent,
-    TrainingComponent
+    TrainingComponent,
+    TuyaComponent
   ],
   imports: [
     BrowserModule,
