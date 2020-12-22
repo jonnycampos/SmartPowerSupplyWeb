@@ -1,0 +1,1873 @@
+{
+	"info": {
+		"_postman_id": "767db217-4df3-48df-ab73-4460f4827822",
+		"name": "API Tuya",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get access_token in simple mode",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1b2ed26c-f92e-4d6f-89d0-f6836413e7c6",
+						"exec": [
+							"var response = JSON.parse(responseBody);",
+							"",
+							"if(response !== null){",
+							"    tests[\"Is Success\"] = response.success === true;",
+							"    if(response.success){",
+							"        tests[\"Body contains access_token\"] = responseBody.has(\"access_token\");",
+							"        pm.environment.set(\"easy_access_token\",response.result.access_token);",
+							"        pm.environment.set(\"easy_refresh_token\",response.result.refresh_token);",
+							"    }",
+							"    else{",
+							"        var msg = \"code: \" + response.code + \" msg: \" + response.msg;",
+							"        tests[msg] = false;",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "831a7cad-f3da-489b-8661-da9d141fffb5",
+						"exec": [
+							"(function () { ",
+							"    var timestamp = getTime();",
+							"    pm.environment.set(\"timestamp\",timestamp);",
+							"    var clientId = pm.environment.get(\"client_id\");",
+							"    var secret = pm.environment.get(\"secret\");",
+							"    var sign = calcSign(clientId,secret,timestamp);",
+							"    pm.environment.set('easy_sign', sign);",
+							"})();",
+							"",
+							"function getTime(){",
+							"    var timestamp = new Date().getTime();",
+							"    return timestamp;",
+							"}",
+							"",
+							"function calcSign(clientId,secret,timestamp){",
+							"    var str = clientId + timestamp;",
+							"    var hash = CryptoJS.HmacSHA256(str, secret);",
+							"    var hashInBase64 = hash.toString();",
+							"    var signUp = hashInBase64.toUpperCase();",
+							"    return signUp;",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "{{client_id}}"
+					},
+					{
+						"key": "sign",
+						"value": "{{easy_sign}}"
+					},
+					{
+						"key": "t",
+						"value": "{{timestamp}}"
+					},
+					{
+						"key": "sign_method",
+						"value": "HMAC-SHA256",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/v1.0/token?grant_type=1",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"v1.0",
+						"token"
+					],
+					"query": [
+						{
+							"key": "grant_type",
+							"value": "1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Refresh token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ceec31de-7c92-4c74-92be-7da3396c6453",
+						"exec": [
+							"var response = JSON.parse(responseBody);",
+							"",
+							"if(response !== null){",
+							"    tests[\"Is Success\"] = response.success === true;",
+							"    if(response.success){",
+							"        tests[\"Body contains access_token\"] = responseBody.has(\"access_token\");",
+							"        pm.environment.set(\"easy_access_token\",response.result.access_token);",
+							"        pm.environment.set(\"easy_refresh_token\",response.result.refresh_token);",
+							"    }",
+							"    else{",
+							"        var msg = \"code: \" + response.code + \" msg: \" + response.msg;",
+							"        tests[msg] = false;",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "9a6b7db3-f2e7-4569-9c63-4a0b16cba7db",
+						"exec": [
+							"(function () {",
+							"    var timestamp = getTime();",
+							"    pm.environment.set(\"timestamp\",timestamp);",
+							"    var clientId = pm.environment.get(\"client_id\");",
+							"    var secret = pm.environment.get(\"secret\");",
+							"    var sign = calcSign(clientId,secret,timestamp);",
+							"    pm.environment.set('easy_sign', sign);",
+							"})();",
+							"",
+							"function getTime(){",
+							"    var timestamp = new Date().getTime();",
+							"    return timestamp;",
+							"}",
+							"",
+							"function calcSign(clientId,secret,timestamp){",
+							"    var str = clientId + timestamp;",
+							"    var hash = CryptoJS.HmacSHA256(str, secret);",
+							"    var hashInBase64 = hash.toString();",
+							"    var signUp = hashInBase64.toUpperCase();",
+							"    return signUp;",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "{{client_id}}",
+						"type": "text"
+					},
+					{
+						"key": "sign",
+						"value": "{{easy_sign}}",
+						"type": "text"
+					},
+					{
+						"key": "t",
+						"value": "{{timestamp}}",
+						"type": "text"
+					},
+					{
+						"key": "sign_method",
+						"value": "HMAC-SHA256",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/v1.0/token/{{easy_refresh_token}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"v1.0",
+						"token",
+						"{{easy_refresh_token}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get device info",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "7d1b4d17-dca8-41bb-835c-1e355fdd9b9f",
+						"exec": [
+							"(function () {",
+							"    var timestamp = getTime();",
+							"    pm.environment.set(\"timestamp\",timestamp);",
+							"    var clientId = pm.environment.get(\"client_id\");",
+							"    var secret = pm.environment.get(\"secret\");",
+							"    var access_token = pm.environment.get(\"easy_access_token\");",
+							"    var sign = calcSign(clientId,access_token,secret,timestamp);",
+							"    pm.environment.set('easy_sign', sign);",
+							"})();",
+							"",
+							"function getTime(){",
+							"    var timestamp = new Date().getTime();",
+							"    return timestamp;",
+							"}",
+							"",
+							"function calcSign(clientId,access_token,secret,timestamp){",
+							"    var str = clientId + access_token + timestamp;",
+							"    var hash = CryptoJS.HmacSHA256(str, secret);",
+							"    var hashInBase64 = hash.toString();",
+							"    var signUp = hashInBase64.toUpperCase();",
+							"    return signUp;",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "acceb7c0-89b7-4d1f-8c12-8ad560695362",
+						"exec": [
+							"var response = JSON.parse(responseBody);",
+							"",
+							"if(response !== null){",
+							"    tests[\"Is Success\"] = response.success === true;",
+							"    if(!response.success){",
+							"        var msg = \"code: \" + response.code + \" msg: \" + response.msg;",
+							"        tests[msg] = false;",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "{{client_id}}",
+						"type": "text"
+					},
+					{
+						"key": "access_token",
+						"value": "{{easy_access_token}}",
+						"type": "text"
+					},
+					{
+						"key": "sign",
+						"value": "{{easy_sign}}",
+						"type": "text"
+					},
+					{
+						"key": "t",
+						"value": "{{timestamp}}",
+						"type": "text"
+					},
+					{
+						"key": "sign_method",
+						"value": "HMAC-SHA256",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/v1.0/devices/{{device_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"v1.0",
+						"devices",
+						"{{device_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get device info in batches",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c9abf94a-fe26-437f-b2ad-e62ed5998936",
+						"exec": [
+							"(function () {",
+							"    var timestamp = getTime();",
+							"    pm.environment.set(\"timestamp\",timestamp);",
+							"    var clientId = pm.environment.get(\"client_id\");",
+							"    var secret = pm.environment.get(\"secret\");",
+							"    var access_token = pm.environment.get(\"easy_access_token\");",
+							"    var sign = calcSign(clientId,access_token,secret,timestamp);",
+							"    pm.environment.set('easy_sign', sign);",
+							"})();",
+							"",
+							"function getTime(){",
+							"    var timestamp = new Date().getTime();",
+							"    return timestamp;",
+							"}",
+							"",
+							"function calcSign(clientId,access_token,secret,timestamp){",
+							"    var str = clientId + access_token + timestamp;",
+							"    var hash = CryptoJS.HmacSHA256(str, secret);",
+							"    var hashInBase64 = hash.toString();",
+							"    var signUp = hashInBase64.toUpperCase();",
+							"    return signUp;",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "e25508fe-be0c-45b4-849a-0affd77bb140",
+						"exec": [
+							"var response = JSON.parse(responseBody);",
+							"",
+							"if(response !== null){",
+							"    tests[\"Is Success\"] = response.success === true;",
+							"    if(!response.success){",
+							"        var msg = \"code: \" + response.code + \" msg: \" + response.msg;",
+							"        tests[msg] = false;",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "{{client_id}}",
+						"type": "text"
+					},
+					{
+						"key": "access_token",
+						"value": "{{easy_access_token}}",
+						"type": "text"
+					},
+					{
+						"key": "sign",
+						"value": "{{easy_sign}}",
+						"type": "text"
+					},
+					{
+						"key": "t",
+						"value": "{{timestamp}}",
+						"type": "text"
+					},
+					{
+						"key": "sign_method",
+						"value": "HMAC-SHA256",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/v1.0/devices?device_ids={{device_id}}&page_no=1&page_size=20",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"v1.0",
+						"devices"
+					],
+					"query": [
+						{
+							"key": "device_ids",
+							"value": "{{device_id}}"
+						},
+						{
+							"key": "page_no",
+							"value": "1"
+						},
+						{
+							"key": "page_size",
+							"value": "20"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get function list",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ffe30765-8a6a-4187-892c-046d0f46ee40",
+						"exec": [
+							"(function () {",
+							"    var timestamp = getTime();",
+							"    pm.environment.set(\"timestamp\",timestamp);",
+							"    var clientId = pm.environment.get(\"client_id\");",
+							"    var secret = pm.environment.get(\"secret\");",
+							"    var access_token = pm.environment.get(\"easy_access_token\");",
+							"    var sign = calcSign(clientId,access_token,secret,timestamp);",
+							"    pm.environment.set('easy_sign', sign);",
+							"})();",
+							"",
+							"function getTime(){",
+							"    var timestamp = new Date().getTime();",
+							"    return timestamp;",
+							"}",
+							"",
+							"function calcSign(clientId,access_token,secret,timestamp){",
+							"    var str = clientId + access_token + timestamp;",
+							"    var hash = CryptoJS.HmacSHA256(str, secret);",
+							"    var hashInBase64 = hash.toString();",
+							"    var signUp = hashInBase64.toUpperCase();",
+							"    return signUp;",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "0d3c7cb3-0103-49b2-b196-e98c51e71360",
+						"exec": [
+							"var response = JSON.parse(responseBody);",
+							"",
+							"if(response !== null){",
+							"    tests[\"Is Success\"] = response.success === true;",
+							"    if(!response.success){",
+							"        var msg = \"code: \" + response.code + \" msg: \" + response.msg;",
+							"        tests[msg] = false;",
+							"    }else{",
+							"        tests[\"Functions Not Null\"] = response.result.functions.length > 0;",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "{{client_id}}",
+						"type": "text"
+					},
+					{
+						"key": "access_token",
+						"value": "{{easy_access_token}}",
+						"type": "text"
+					},
+					{
+						"key": "sign",
+						"value": "{{easy_sign}}",
+						"type": "text"
+					},
+					{
+						"key": "t",
+						"value": "{{timestamp}}",
+						"type": "text"
+					},
+					{
+						"key": "sign_method",
+						"value": "HMAC-SHA256",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/v1.0/functions/dj",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"v1.0",
+						"functions",
+						"dj"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get info of device data point",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c9abf94a-fe26-437f-b2ad-e62ed5998936",
+						"exec": [
+							"(function () {",
+							"    var timestamp = getTime();",
+							"    pm.environment.set(\"timestamp\",timestamp);",
+							"    var clientId = pm.environment.get(\"client_id\");",
+							"    var secret = pm.environment.get(\"secret\");",
+							"    var access_token = pm.environment.get(\"easy_access_token\");",
+							"    var sign = calcSign(clientId,access_token,secret,timestamp);",
+							"    pm.environment.set('easy_sign', sign);",
+							"})();",
+							"",
+							"function getTime(){",
+							"    var timestamp = new Date().getTime();",
+							"    return timestamp;",
+							"}",
+							"",
+							"function calcSign(clientId,access_token,secret,timestamp){",
+							"    var str = clientId + access_token + timestamp;",
+							"    var hash = CryptoJS.HmacSHA256(str, secret);",
+							"    var hashInBase64 = hash.toString();",
+							"    var signUp = hashInBase64.toUpperCase();",
+							"    return signUp;",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "d2a410c1-698d-4e3a-88ef-2f659c0f13a6",
+						"exec": [
+							"var response = JSON.parse(responseBody);",
+							"",
+							"if(response !== null){",
+							"    tests[\"Is Success\"] = response.success === true;",
+							"    if(!response.success){",
+							"        var msg = \"code: \" + response.code + \" msg: \" + response.msg;",
+							"        tests[msg] = false;",
+							"    }else{",
+							"        tests[\"result Not Null\"] = response.result.length > 0;",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "{{client_id}}",
+						"type": "text"
+					},
+					{
+						"key": "access_token",
+						"value": "{{easy_access_token}}",
+						"type": "text"
+					},
+					{
+						"key": "sign",
+						"value": "{{easy_sign}}",
+						"type": "text"
+					},
+					{
+						"key": "t",
+						"value": "{{timestamp}}",
+						"type": "text"
+					},
+					{
+						"key": "sign_method",
+						"value": "HMAC-SHA256",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/v1.0/devices/{{device_id}}/status",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"v1.0",
+						"devices",
+						"{{device_id}}",
+						"status"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get device status in batches",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c9abf94a-fe26-437f-b2ad-e62ed5998936",
+						"exec": [
+							"(function () {",
+							"    var timestamp = getTime();",
+							"    pm.environment.set(\"timestamp\",timestamp);",
+							"    var clientId = pm.environment.get(\"client_id\");",
+							"    var secret = pm.environment.get(\"secret\");",
+							"    var access_token = pm.environment.get(\"easy_access_token\");",
+							"    var sign = calcSign(clientId,access_token,secret,timestamp);",
+							"    pm.environment.set('easy_sign', sign);",
+							"})();",
+							"",
+							"function getTime(){",
+							"    var timestamp = new Date().getTime();",
+							"    return timestamp;",
+							"}",
+							"",
+							"function calcSign(clientId,access_token,secret,timestamp){",
+							"    var str = clientId + access_token + timestamp;",
+							"    var hash = CryptoJS.HmacSHA256(str, secret);",
+							"    var hashInBase64 = hash.toString();",
+							"    var signUp = hashInBase64.toUpperCase();",
+							"    return signUp;",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "833675b9-9f07-4483-bd26-0341e6c5ae88",
+						"exec": [
+							"var response = JSON.parse(responseBody);",
+							"",
+							"if(response !== null){",
+							"    tests[\"Is Success\"] = response.success === true;",
+							"    if(!response.success){",
+							"        var msg = \"code: \" + response.code + \" msg: \" + response.msg;",
+							"        tests[msg] = false;",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "{{client_id}}",
+						"type": "text"
+					},
+					{
+						"key": "access_token",
+						"value": "{{easy_access_token}}",
+						"type": "text"
+					},
+					{
+						"key": "sign",
+						"value": "{{easy_sign}}",
+						"type": "text"
+					},
+					{
+						"key": "t",
+						"value": "{{timestamp}}",
+						"type": "text"
+					},
+					{
+						"key": "sign_method",
+						"value": "HMAC-SHA256",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/v1.0/devices/status?device_ids={{device_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"v1.0",
+						"devices",
+						"status"
+					],
+					"query": [
+						{
+							"key": "device_ids",
+							"value": "{{device_id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Query command set supported by device",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "227b8e10-0ba8-4886-a657-d2d49fa07322",
+						"exec": [
+							"(function () {",
+							"    var timestamp = getTime();",
+							"    pm.environment.set(\"timestamp\",timestamp);",
+							"    var clientId = pm.environment.get(\"client_id\");",
+							"    var secret = pm.environment.get(\"secret\");",
+							"    var access_token = pm.environment.get(\"easy_access_token\");",
+							"    var sign = calcSign(clientId,access_token,secret,timestamp);",
+							"    pm.environment.set('easy_sign', sign);",
+							"})();",
+							"",
+							"function getTime(){",
+							"    var timestamp = new Date().getTime();",
+							"    return timestamp;",
+							"}",
+							"",
+							"function calcSign(clientId,access_token,secret,timestamp){",
+							"    var str = clientId + access_token + timestamp;",
+							"    var hash = CryptoJS.HmacSHA256(str, secret);",
+							"    var hashInBase64 = hash.toString();",
+							"    var signUp = hashInBase64.toUpperCase();",
+							"    return signUp;",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "7df543cc-9344-4e5d-acbc-dca25404492b",
+						"exec": [
+							"var response = JSON.parse(responseBody);",
+							"",
+							"if(response !== null){",
+							"    tests[\"Is Success\"] = response.success === true;",
+							"    if(!response.success){",
+							"        var msg = \"code: \" + response.code + \" msg: \" + response.msg;",
+							"        tests[msg] = false;",
+							"    }else{",
+							"        tests[\"result Not Null\"] = response.result.functions.length > 0;",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "{{client_id}}",
+						"type": "text"
+					},
+					{
+						"key": "access_token",
+						"value": "{{easy_access_token}}",
+						"type": "text"
+					},
+					{
+						"key": "sign",
+						"value": "{{easy_sign}}",
+						"type": "text"
+					},
+					{
+						"key": "t",
+						"value": "{{timestamp}}",
+						"type": "text"
+					},
+					{
+						"key": "sign_method",
+						"value": "HMAC-SHA256",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/v1.0/devices/{{device_id}}/functions",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"v1.0",
+						"devices",
+						"{{device_id}}",
+						"functions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Send device command",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "14041aaf-e77d-4f83-8956-72c49715a5eb",
+						"exec": [
+							"(function () {",
+							"    var timestamp = getTime();",
+							"    pm.environment.set(\"timestamp\",timestamp);",
+							"    var clientId = pm.environment.get(\"client_id\");",
+							"    var secret = pm.environment.get(\"secret\");",
+							"    var access_token = pm.environment.get(\"easy_access_token\");",
+							"    var sign = calcSign(clientId,access_token,secret,timestamp);",
+							"    pm.environment.set('easy_sign', sign);",
+							"})();",
+							"",
+							"function getTime(){",
+							"    var timestamp = new Date().getTime();",
+							"    return timestamp;",
+							"}",
+							"",
+							"function calcSign(clientId,access_token,secret,timestamp){",
+							"    var str = clientId + access_token + timestamp;",
+							"    var hash = CryptoJS.HmacSHA256(str, secret);",
+							"    var hashInBase64 = hash.toString();",
+							"    var signUp = hashInBase64.toUpperCase();",
+							"    return signUp;",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "8b94d143-dcfe-4653-93ef-9f0a81338b6b",
+						"exec": [
+							"var response = JSON.parse(responseBody);",
+							"",
+							"if(response !== null){",
+							"    tests[\"Is Success\"] = response.success === true;",
+							"    if(!response.success){",
+							"        var msg = \"code: \" + response.code + \" msg: \" + response.msg;",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "{{client_id}}",
+						"type": "text"
+					},
+					{
+						"key": "access_token",
+						"value": "{{easy_access_token}}",
+						"type": "text"
+					},
+					{
+						"key": "sign",
+						"value": "{{easy_sign}}",
+						"type": "text"
+					},
+					{
+						"key": "t",
+						"value": "{{timestamp}}",
+						"type": "text"
+					},
+					{
+						"key": "sign_method",
+						"value": "HMAC-SHA256",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"commands\":[\n\t\t{\n\t\t\t\"code\": \"switch\",\n\t\t\t\"value\":true\n\t\t}\n\t]\n}",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/v1.0/devices/{{device_id}}/commands",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"v1.0",
+						"devices",
+						"{{device_id}}",
+						"commands"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register user account in the cloud",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "6d3b0188-ed05-4357-a79b-1a3bbcea2804",
+						"exec": [
+							"(function () {",
+							"    var timestamp = getTime();",
+							"    pm.environment.set(\"timestamp\",timestamp);",
+							"    var clientId = pm.environment.get(\"client_id\");",
+							"    var secret = pm.environment.get(\"secret\");",
+							"    var access_token = pm.environment.get(\"easy_access_token\");",
+							"    var sign = calcSign(clientId,access_token,secret,timestamp);",
+							"    pm.environment.set('easy_sign', sign);",
+							"})();",
+							"",
+							"function getTime(){",
+							"    var timestamp = new Date().getTime();",
+							"    return timestamp;",
+							"}",
+							"",
+							"function calcSign(clientId,access_token,secret,timestamp){",
+							"    var str = clientId + access_token + timestamp;",
+							"    var hash = CryptoJS.HmacSHA256(str, secret);",
+							"    var hashInBase64 = hash.toString();",
+							"    var signUp = hashInBase64.toUpperCase();",
+							"    return signUp;",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "4f5df29e-1fef-418c-a2fc-8de0025b7198",
+						"exec": [
+							"var response = JSON.parse(responseBody);",
+							"",
+							"if(response !== null){",
+							"    tests[\"Is Success\"] = response.success === true;",
+							"    if(!response.success){",
+							"        var msg = \"code: \" + response.code + \" msg: \" + response.msg;",
+							"        tests[msg] = false;",
+							"    }else{",
+							"        pm.environment.set(\"uid\",response.result.uid);",
+							"        tests[\"Uid Not Null\"] = response.result.uid !== \"\";",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "{{client_id}}",
+						"type": "text"
+					},
+					{
+						"key": "access_token",
+						"value": "{{easy_access_token}}",
+						"type": "text"
+					},
+					{
+						"key": "sign",
+						"value": "{{easy_sign}}",
+						"type": "text"
+					},
+					{
+						"key": "t",
+						"value": "{{timestamp}}",
+						"type": "text"
+					},
+					{
+						"key": "sign_method",
+						"value": "HMAC-SHA256",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"country_code\":\"86\",\n\t\"username\":\"test123\",\n\t\"password\":\"12345654321\",\n\t\"nick_name\":\"测试三系列用户\",\n\t\"username_type\":\"3\"\n}",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/v1.0/apps/{{schema}}/user",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"v1.0",
+						"apps",
+						"{{schema}}",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get user list",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e430286f-58fd-4ce8-9688-6fec2a161160",
+						"exec": [
+							"(function () {",
+							"    var timestamp = getTime();",
+							"    pm.environment.set(\"timestamp\",timestamp);",
+							"    var clientId = pm.environment.get(\"client_id\");",
+							"    var secret = pm.environment.get(\"secret\");",
+							"    var access_token = pm.environment.get(\"easy_access_token\");",
+							"    var sign = calcSign(clientId,access_token,secret,timestamp);",
+							"    pm.environment.set('easy_sign', sign);",
+							"})();",
+							"",
+							"function getTime(){",
+							"    var timestamp = new Date().getTime();",
+							"    return timestamp;",
+							"}",
+							"",
+							"function calcSign(clientId,access_token,secret,timestamp){",
+							"    var str = clientId + access_token + timestamp;",
+							"    var hash = CryptoJS.HmacSHA256(str, secret);",
+							"    var hashInBase64 = hash.toString();",
+							"    var signUp = hashInBase64.toUpperCase();",
+							"    return signUp;",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "c857e3dd-9128-4fdd-bbc6-37e3d385551d",
+						"exec": [
+							"var response = JSON.parse(responseBody);",
+							"",
+							"if(response !== null){",
+							"    tests[\"Is Success\"] = response.success === true;",
+							"    if(!response.success){",
+							"        var msg = \"code: \" + response.code + \" msg: \" + response.msg;",
+							"        tests[msg] = false;",
+							"    }else{",
+							"        tests[\"List Not Null\"] = response.result.list.length > 0;",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "{{client_id}}",
+						"type": "text"
+					},
+					{
+						"key": "access_token",
+						"value": "{{easy_access_token}}",
+						"type": "text"
+					},
+					{
+						"key": "sign",
+						"value": "{{easy_sign}}",
+						"type": "text"
+					},
+					{
+						"key": "t",
+						"value": "{{timestamp}}",
+						"type": "text"
+					},
+					{
+						"key": "sign_method",
+						"value": "HMAC-SHA256",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/v1.0/apps/{{schema}}/users?page_no=1&page_size=10",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"v1.0",
+						"apps",
+						"{{schema}}",
+						"users"
+					],
+					"query": [
+						{
+							"key": "page_no",
+							"value": "1"
+						},
+						{
+							"key": "page_size",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get device list by user ID",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "f48e0f5b-3d14-4b23-9de1-dcca82be155f",
+						"exec": [
+							"(function () {",
+							"    var timestamp = getTime();",
+							"    pm.environment.set(\"timestamp\",timestamp);",
+							"    var clientId = pm.environment.get(\"client_id\");",
+							"    var secret = pm.environment.get(\"secret\");",
+							"    var access_token = pm.environment.get(\"easy_access_token\");",
+							"    var sign = calcSign(clientId,access_token,secret,timestamp);",
+							"    pm.environment.set('easy_sign', sign);",
+							"})();",
+							"",
+							"function getTime(){",
+							"    var timestamp = new Date().getTime();",
+							"    return timestamp;",
+							"}",
+							"",
+							"function calcSign(clientId,access_token,secret,timestamp){",
+							"    var str = clientId + access_token + timestamp;",
+							"    var hash = CryptoJS.HmacSHA256(str, secret);",
+							"    var hashInBase64 = hash.toString();",
+							"    var signUp = hashInBase64.toUpperCase();",
+							"    return signUp;",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "8f3fefea-fabb-4884-80f2-2c2e3eb755b4",
+						"exec": [
+							"var response = JSON.parse(responseBody);",
+							"",
+							"if(response !== null){",
+							"    tests[\"Is Success\"] = response.success === true;",
+							"    if(!response.success){",
+							"        var msg = \"code: \" + response.code + \" msg: \" + response.msg;",
+							"        tests[msg] = false;",
+							"    }else{",
+							"        tests[\"result Not Null\"] = response.result !== [];",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "{{client_id}}",
+						"type": "text"
+					},
+					{
+						"key": "access_token",
+						"value": "{{easy_access_token}}",
+						"type": "text"
+					},
+					{
+						"key": "sign",
+						"value": "{{easy_sign}}",
+						"type": "text"
+					},
+					{
+						"key": "t",
+						"value": "{{timestamp}}",
+						"type": "text"
+					},
+					{
+						"key": "sign_method",
+						"value": "HMAC-SHA256",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/v1.0/users/{{uid}}/devices",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"v1.0",
+						"users",
+						"{{uid}}",
+						"devices"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Generate network configuration token of device",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c43c78e3-975a-4874-8b62-0ccae247835c",
+						"exec": [
+							"(function () {",
+							"    var timestamp = getTime();",
+							"    pm.environment.set(\"timestamp\",timestamp);",
+							"    var clientId = pm.environment.get(\"client_id\");",
+							"    var secret = pm.environment.get(\"secret\");",
+							"    var access_token = pm.environment.get(\"easy_access_token\");",
+							"    var sign = calcSign(clientId,access_token,secret,timestamp);",
+							"    pm.environment.set('easy_sign', sign);",
+							"})();",
+							"",
+							"function getTime(){",
+							"    var timestamp = new Date().getTime();",
+							"    return timestamp;",
+							"}",
+							"",
+							"function calcSign(clientId,access_token,secret,timestamp){",
+							"    var str = clientId + access_token + timestamp;",
+							"    var hash = CryptoJS.HmacSHA256(str, secret);",
+							"    var hashInBase64 = hash.toString();",
+							"    var signUp = hashInBase64.toUpperCase();",
+							"    return signUp;",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "1e0b35d2-f211-4766-8f84-71166265f3d1",
+						"exec": [
+							"var response = JSON.parse(responseBody);",
+							"",
+							"if(response !== null){",
+							"    tests[\"Is Success\"] = response.success === true;",
+							"    if(!response.success){",
+							"        var msg = \"code: \" + response.code + \" msg: \" + response.msg;",
+							"        tests[msg] = false;",
+							"    }else{",
+							"        tests[\"Token Not Null\"] = response.result.token !== \"\";",
+							"        pm.environment.set(\"pair_token\",response.result.token);",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "{{client_id}}",
+						"type": "text"
+					},
+					{
+						"key": "access_token",
+						"value": "{{easy_access_token}}",
+						"type": "text"
+					},
+					{
+						"key": "sign",
+						"value": "{{easy_sign}}",
+						"type": "text"
+					},
+					{
+						"key": "t",
+						"value": "{{timestamp}}",
+						"type": "text"
+					},
+					{
+						"key": "sign_method",
+						"value": "HMAC-SHA256",
+						"type": "text"
+					},
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"uid\":\"{{uid}}\",\n\t\"timeZoneId\":\"Asia/Shanghai\"\n}",
+					"options": {
+						"raw": {}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/v1.0/devices/token",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"v1.0",
+						"devices",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get device list by token",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "618a1139-db53-408e-8746-22b605168e8b",
+						"exec": [
+							"(function () {",
+							"    var timestamp = getTime();",
+							"    pm.environment.set(\"timestamp\",timestamp);",
+							"    var clientId = pm.environment.get(\"client_id\");",
+							"    var secret = pm.environment.get(\"secret\");",
+							"    var access_token = pm.environment.get(\"easy_access_token\");",
+							"    var sign = calcSign(clientId,access_token,secret,timestamp);",
+							"    pm.environment.set('easy_sign', sign);",
+							"})();",
+							"",
+							"function getTime(){",
+							"    var timestamp = new Date().getTime();",
+							"    return timestamp;",
+							"}",
+							"",
+							"function calcSign(clientId,access_token,secret,timestamp){",
+							"    var str = clientId + access_token + timestamp;",
+							"    var hash = CryptoJS.HmacSHA256(str, secret);",
+							"    var hashInBase64 = hash.toString();",
+							"    var signUp = hashInBase64.toUpperCase();",
+							"    return signUp;",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "a77da54f-5fa7-46ba-91b1-321f6a6c2463",
+						"exec": [
+							"var response = JSON.parse(responseBody);",
+							"",
+							"if(response !== null){",
+							"    tests[\"Is Success\"] = response.success === true;",
+							"    if(!response.success){",
+							"        var msg = \"code: \" + response.code + \" msg: \" + response.msg;",
+							"        tests[msg] = false;",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "{{client_id}}",
+						"type": "text"
+					},
+					{
+						"key": "access_token",
+						"value": "{{easy_access_token}}",
+						"type": "text"
+					},
+					{
+						"key": "sign",
+						"value": "{{easy_sign}}",
+						"type": "text"
+					},
+					{
+						"key": "t",
+						"value": "{{timestamp}}",
+						"type": "text"
+					},
+					{
+						"key": "sign_method",
+						"value": "HMAC-SHA256",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/v1.0/devices/tokens/{{pair_token}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"v1.0",
+						"devices",
+						"tokens",
+						"{{pair_token}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Remove the device",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "92c3b7df-7eec-4b7d-add5-164ced046776",
+						"exec": [
+							"(function () {",
+							"    var timestamp = getTime();",
+							"    pm.environment.set(\"timestamp\",timestamp);",
+							"    var clientId = pm.environment.get(\"client_id\");",
+							"    var secret = pm.environment.get(\"secret\");",
+							"    var access_token = pm.environment.get(\"easy_access_token\");",
+							"    var sign = calcSign(clientId,access_token,secret,timestamp);",
+							"    pm.environment.set('easy_sign', sign);",
+							"})();",
+							"",
+							"function getTime(){",
+							"    var timestamp = new Date().getTime();",
+							"    return timestamp;",
+							"}",
+							"",
+							"function calcSign(clientId,access_token,secret,timestamp){",
+							"    var str = clientId + access_token + timestamp;",
+							"    var hash = CryptoJS.HmacSHA256(str, secret);",
+							"    var hashInBase64 = hash.toString();",
+							"    var signUp = hashInBase64.toUpperCase();",
+							"    return signUp;",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "e427c516-f201-4b30-abcb-b76a63d6a9d5",
+						"exec": [
+							"var response = JSON.parse(responseBody);",
+							"",
+							"if(response !== null){",
+							"    tests[\"Is Success\"] = response.success === true;",
+							"    if(!response.success && response.code !=2011 && response.code !=1106){",
+							"        var msg = \"code: \" + response.code + \" msg: \" + response.msg;",
+							"        tests[msg] = false;",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "{{client_id}}",
+						"type": "text"
+					},
+					{
+						"key": "access_token",
+						"value": "{{easy_access_token}}",
+						"type": "text"
+					},
+					{
+						"key": "sign",
+						"value": "{{easy_sign}}",
+						"type": "text"
+					},
+					{
+						"key": "t",
+						"value": "{{timestamp}}",
+						"type": "text"
+					},
+					{
+						"key": "sign_method",
+						"value": "HMAC-SHA256",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/v1.0/devices/{{device_id}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"v1.0",
+						"devices",
+						"{{device_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Statistics by Minute",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "7d1b4d17-dca8-41bb-835c-1e355fdd9b9f",
+						"exec": [
+							"(function () {",
+							"    var timestamp = getTime();",
+							"    pm.environment.set(\"timestamp\",timestamp);",
+							"    var clientId = pm.environment.get(\"client_id\");",
+							"    var secret = pm.environment.get(\"secret\");",
+							"    var access_token = pm.environment.get(\"easy_access_token\");",
+							"    var sign = calcSign(clientId,access_token,secret,timestamp);",
+							"    pm.environment.set('easy_sign', sign);",
+							"})();",
+							"",
+							"function getTime(){",
+							"    var timestamp = new Date().getTime();",
+							"    return timestamp;",
+							"}",
+							"",
+							"function calcSign(clientId,access_token,secret,timestamp){",
+							"    var str = clientId + access_token + timestamp;",
+							"    var hash = CryptoJS.HmacSHA256(str, secret);",
+							"    var hashInBase64 = hash.toString();",
+							"    var signUp = hashInBase64.toUpperCase();",
+							"    return signUp;",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "acceb7c0-89b7-4d1f-8c12-8ad560695362",
+						"exec": [
+							"var response = JSON.parse(responseBody);",
+							"",
+							"if(response !== null){",
+							"    tests[\"Is Success\"] = response.success === true;",
+							"    if(!response.success){",
+							"        var msg = \"code: \" + response.code + \" msg: \" + response.msg;",
+							"        tests[msg] = false;",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "{{client_id}}",
+						"type": "text"
+					},
+					{
+						"key": "access_token",
+						"value": "{{easy_access_token}}",
+						"type": "text"
+					},
+					{
+						"key": "sign",
+						"value": "{{easy_sign}}",
+						"type": "text"
+					},
+					{
+						"key": "t",
+						"value": "{{timestamp}}",
+						"type": "text"
+					},
+					{
+						"key": "sign_method",
+						"value": "HMAC-SHA256",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/v1.0/devices/{{device_id}}/statistics/quarters",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"v1.0",
+						"devices",
+						"{{device_id}}",
+						"statistics",
+						"quarters"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logs from device",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "7d1b4d17-dca8-41bb-835c-1e355fdd9b9f",
+						"exec": [
+							"(function () {",
+							"    var timestamp = getTime();",
+							"    pm.environment.set(\"timestamp\",timestamp);",
+							"    var clientId = pm.environment.get(\"client_id\");",
+							"    var secret = pm.environment.get(\"secret\");",
+							"    var access_token = pm.environment.get(\"easy_access_token\");",
+							"    var sign = calcSign(clientId,access_token,secret,timestamp);",
+							"    pm.environment.set('easy_sign', sign);",
+							"})();",
+							"",
+							"function getTime(){",
+							"    var timestamp = new Date().getTime();",
+							"    return timestamp;",
+							"}",
+							"",
+							"function calcSign(clientId,access_token,secret,timestamp){",
+							"    var str = clientId + access_token + timestamp;",
+							"    var hash = CryptoJS.HmacSHA256(str, secret);",
+							"    var hashInBase64 = hash.toString();",
+							"    var signUp = hashInBase64.toUpperCase();",
+							"    return signUp;",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "acceb7c0-89b7-4d1f-8c12-8ad560695362",
+						"exec": [
+							"var response = JSON.parse(responseBody);",
+							"",
+							"if(response !== null){",
+							"    tests[\"Is Success\"] = response.success === true;",
+							"    if(!response.success){",
+							"        var msg = \"code: \" + response.code + \" msg: \" + response.msg;",
+							"        tests[msg] = false;",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "{{client_id}}",
+						"type": "text"
+					},
+					{
+						"key": "access_token",
+						"value": "{{easy_access_token}}",
+						"type": "text"
+					},
+					{
+						"key": "sign",
+						"value": "{{easy_sign}}",
+						"type": "text"
+					},
+					{
+						"key": "t",
+						"value": "{{timestamp}}",
+						"type": "text"
+					},
+					{
+						"key": "sign_method",
+						"value": "HMAC-SHA256",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/v1.0/devices/{{device_id}}/logs?start_row_key=&type=1,2,3,4&start_time=0&end_time=1603786968149&size=20\n",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"v1.0",
+						"devices",
+						"{{device_id}}",
+						"logs"
+					],
+					"query": [
+						{
+							"key": "start_row_key",
+							"value": ""
+						},
+						{
+							"key": "type",
+							"value": "1,2,3,4"
+						},
+						{
+							"key": "start_time",
+							"value": "0"
+						},
+						{
+							"key": "end_time",
+							"value": "1603786968149"
+						},
+						{
+							"key": "size",
+							"value": "20\n"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Logs From Tuya Device",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "7d1b4d17-dca8-41bb-835c-1e355fdd9b9f",
+						"exec": [
+							"(function () {",
+							"    var timestamp = getTime();",
+							"    pm.environment.set(\"timestamp\",timestamp);",
+							"    var clientId = pm.environment.get(\"client_id\");",
+							"    var secret = pm.environment.get(\"secret\");",
+							"    var access_token = pm.environment.get(\"easy_access_token\");",
+							"    var sign = calcSign(clientId,access_token,secret,timestamp);",
+							"    pm.environment.set('easy_sign', sign);",
+							"})();",
+							"",
+							"function getTime(){",
+							"    var timestamp = new Date().getTime();",
+							"    return timestamp;",
+							"}",
+							"",
+							"function calcSign(clientId,access_token,secret,timestamp){",
+							"    var str = clientId + access_token + timestamp;",
+							"    var hash = CryptoJS.HmacSHA256(str, secret);",
+							"    var hashInBase64 = hash.toString();",
+							"    var signUp = hashInBase64.toUpperCase();",
+							"    return signUp;",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "acceb7c0-89b7-4d1f-8c12-8ad560695362",
+						"exec": [
+							"var response = JSON.parse(responseBody);",
+							"",
+							"if(response !== null){",
+							"    tests[\"Is Success\"] = response.success === true;",
+							"    if(!response.success){",
+							"        var msg = \"code: \" + response.code + \" msg: \" + response.msg;",
+							"        tests[msg] = false;",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "client_id",
+						"value": "{{client_id}}",
+						"type": "text"
+					},
+					{
+						"key": "access_token",
+						"value": "{{easy_access_token}}",
+						"type": "text"
+					},
+					{
+						"key": "sign",
+						"value": "{{easy_sign}}",
+						"type": "text"
+					},
+					{
+						"key": "t",
+						"value": "{{timestamp}}",
+						"type": "text"
+					},
+					{
+						"key": "sign_method",
+						"value": "HMAC-SHA256",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{url}}/v1.0/devices/{{device_id}}/logs?start_row_key=&type=1,2,3,4,5,6,7,8,9,10&size=50&start_time=1607279011&end_time=1609266222",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"v1.0",
+						"devices",
+						"{{device_id}}",
+						"logs"
+					],
+					"query": [
+						{
+							"key": "start_row_key",
+							"value": ""
+						},
+						{
+							"key": "type",
+							"value": "1,2,3,4,5,6,7,8,9,10"
+						},
+						{
+							"key": "size",
+							"value": "50"
+						},
+						{
+							"key": "start_time",
+							"value": "1607279011"
+						},
+						{
+							"key": "end_time",
+							"value": "1609266222"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
